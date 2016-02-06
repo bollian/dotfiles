@@ -1,0 +1,37 @@
+[alias]
+glog = log --graph -l 10 --template "{label('custom.{phase}',rev)}:{label('custom.hash',node|short)} {label('custom.date',date|rfc822date)} ({label('custom.age',date|age)}) {label('custom.bookmark',bookmarks)} {label('custom.tag',tags)} {label('custom.branch',branch)}\n\t{desc|firstline} {label('custom.user','- {author|person}')}\n\n"
+
+[ui]
+merge = kdiff3
+editor = nano
+
+username = ian.boll <ian.boll@vaeit.com>
+
+[merge-tools]
+kdiff3.premerge = false
+kdiff3.args=--L1 base --L2 local --L3 other $base $local $other -o $output
+
+[extensions]
+strip = 
+graphlog = 
+color = 
+progress = 
+
+[color]
+# can't figure out how to use custom colors. grrr
+#brightblue = 12
+#orange = 202
+#pink = 207
+
+custom.public = magenta
+custom.draft = green
+custom.secret = red
+custom.hash = green bold
+custom.date = blue bold
+custom.age = cyan
+custom.text = white
+custom.user = black bold
+
+custom.bookmark = white purple_background
+custom.tag = red
+custom.branch = yellow bold
