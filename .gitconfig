@@ -1,0 +1,29 @@
+[user]
+email = lordofthemaracas@gmail.com
+name = Calcifer
+
+[push]
+default = simple
+
+[merge]
+tool = kdiff3
+
+[mergetool "someMergeTool"] # just an example
+cmd = kdiff3 "$BASE" "$LOCAL" "$REMOTE" -o "$MERGED"
+
+[color "ui"]
+HEAD = red
+
+[pretty]
+glog = format:%C(bold green)%h%C(reset) %C(bold blue)%ad%C(reset) (%C(cyan)%ar%C(reset)) %C(auto)%d%n\t%C(reset)%s %C(dim white)- %an%n
+
+[alias]
+glog = !git --no-pager log --color --graph -n 10 --pretty=glog --all
+
+glogl = log --graph --pretty=glog --all
+
+[color "decorate"]
+tag = dim red
+branch = bold magenta reverse
+remoteBranch = bold yellow
+HEAD = green reverse
