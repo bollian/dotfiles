@@ -105,10 +105,6 @@ function rv
 	rm --verbose $argv
 end
 
-function rd
-	rv -rf $argv
-end
-
 function cl
 	if cd $argv
 		ls
