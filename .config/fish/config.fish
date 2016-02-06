@@ -28,16 +28,16 @@ function croot
 	if [ $REPO_DIR = "No repository was found." ]
 		echo $REPO_DIR
 	else
-		cd (root)
+		cd (root) $argv
 	end
 end
 
 function push
 	set TYPE (repotype)
 	if [ $TYPE = "git" ]
-		git push
+		git push $argv
 	else if [ $TYPE = "hg" ]
-		hg push
+		hg push $argv
 	else
 		echo $TYPE
 	end
@@ -58,9 +58,9 @@ end
 function fetch
 	set TYPE (repotype)
 	if [ $TYPE = "git" ]
-		git fetch
+		git fetch $argv
 	else if [ $TYPE = "hg" ]
-		hg pull
+		hg pull $argv
 	else
 		echo $TYPE
 	end
@@ -69,9 +69,9 @@ end
 function rstat
 	set TYPE (repotype)
 	if [ $TYPE = "git" ]
-		git status
+		git status $argv
 	else if [ $TYPE = "hg" ]
-		hg status
+		hg status $argv
 	else
 		echo $TYPE
 	end
