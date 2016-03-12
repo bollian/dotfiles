@@ -6,7 +6,7 @@ name = Calcifer
 default = simple
 
 [merge]
-tool = kdiff3
+	tool = kdiff3
 
 [mergetool "someMergeTool"] # just an example
 cmd = kdiff3 "$BASE" "$LOCAL" "$REMOTE" -o "$MERGED"
@@ -27,3 +27,6 @@ tag = dim red
 branch = bold magenta reverse
 remoteBranch = bold yellow
 HEAD = green reverse
+
+[core]
+	autocrlf = input
