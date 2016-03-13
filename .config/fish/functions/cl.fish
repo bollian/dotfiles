@@ -1,5 +1,3 @@
 function cl
-	if cd $argv
-		ls
-	end
+	bash -i -c "cl $argv"
 end

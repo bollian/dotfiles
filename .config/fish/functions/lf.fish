@@ -1,3 +1,3 @@
 function lf
-	ll | grep $argv[1]
+	bash -i -c "lf $argv"
 end

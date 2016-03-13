@@ -1,3 +1,3 @@
 function rv
-	rm --verbose $argv
+	bash -i -c "rv $argv"
 end

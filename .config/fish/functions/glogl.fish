@@ -1,3 +1,3 @@
 function glogl
-	git glogl $argv
+	bash -i -c "glogl $argv"
 end
