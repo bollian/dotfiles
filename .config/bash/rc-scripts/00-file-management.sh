@@ -1,7 +1,7 @@
 #!/bin/bash
 
 lf() {
-	ls -l | grep $1
+	ls -la | grep $1
 }
 
 cl() {

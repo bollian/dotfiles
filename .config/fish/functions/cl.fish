@@ -1,3 +1,5 @@
 function cl
-	bash -i -c "cl $argv"
+	if cd $argv
+		ls
+	end
 end
