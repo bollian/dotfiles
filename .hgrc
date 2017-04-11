@@ -5,8 +5,6 @@ glog = log --graph -l 10 --template "{label('custom.{phase}',rev)}:{label('custo
 merge = kdiff3
 editor = nano
 
-username = ian.boll <ian.boll@vaeit.com>
-
 [merge-tools]
 kdiff3.premerge = false
 kdiff3.args=--L1 base --L2 local --L3 other $base $local $other -o $output
