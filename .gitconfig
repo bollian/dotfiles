@@ -15,7 +15,7 @@ cmd = kdiff3 "$BASE" "$LOCAL" "$REMOTE" -o "$MERGED"
 HEAD = red
 
 [pretty]
-glog = format:%C(bold green)%h%C(reset) %C(bold blue)%ad%C(reset) (%C(cyan)%ar%C(reset)) %C(auto)%d%n\t%C(reset)%s %C(dim white)- %an%n
+glog = format:%C(bold green)%h%C(reset) %C(bold blue)%ad%C(reset) (%C(cyan)%ar%C(reset)) %C(auto)%d%n\t%C(reset)%s %C(dim white)- %an%C(reset)%n
 
 [alias]
 glog = !git --no-pager log --color --graph -n 10 --pretty=glog --all
