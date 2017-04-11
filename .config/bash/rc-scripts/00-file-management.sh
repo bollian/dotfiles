@@ -5,14 +5,16 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
+ll() {
+	ls -laF $@
+}
+
 lf() {
-	ls -la | grep $1
+	ll | grep $1
 }
 
 cl() {
-	if cd $@; then
-		ls
-	fi
+	cd $@ && ls
 }
 
 rv() {
