@@ -2,7 +2,7 @@
 
 lnr() {
 	mkdir -p `dirname "$2"` || true
-	ln -sf "$1" "$2"
+	ln -sf `pwd`/"$1" "$2"
 }
 
 lnr DotFiles/.bashrc .bashrc
