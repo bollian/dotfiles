@@ -1,4 +1,4 @@
-export GOPATH='/home/calcifer/code/go'
+export GOPATH="${HOME}/code/go"
 
 PS_RESET='\[\e[0m\]'
 PS_BOLD='\[\e[1m\]'
