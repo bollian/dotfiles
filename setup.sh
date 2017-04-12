@@ -1,7 +1,12 @@
 #!/bin/sh
 
-ln -sf DotFiles/.bashrc .bashrc
-ln -sf DotFiles/.config/bash .config/bash
-ln -sf DotFiles/.gitconfig .gitconfig
-ln -sf DotFiles/.gitignore .gitignore
-ln -sf DotFiles/.hgrc .hgrc
+lnr() {
+	mkdir -p `dirname "$2"` || true
+	ln -sf "$1" "$2"
+}
+
+lnr DotFiles/.bashrc .bashrc
+lnr DotFiles/.config/bash .config/bash
+lnr DotFiles/.gitconfig .gitconfig
+lnr DotFiles/.gitignore .gitignore
+lnr DotFiles/.hgrc .hgrc
