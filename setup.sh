@@ -7,6 +7,5 @@ lnr() {
 
 lnr DotFiles/.bashrc .bashrc
 lnr DotFiles/.config/bash .config/bash
-lnr DotFiles/.gitconfig .gitconfig
-lnr DotFiles/.gitignore .gitignore
+lnr DotFiles/.config/git .config/git
 lnr DotFiles/.hgrc .hgrc
