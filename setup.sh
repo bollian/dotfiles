@@ -8,7 +8,7 @@ lnr() {
 # change to user directory
 cd
 
-lnr DotFiles/.bashrc .bashrc
-lnr DotFiles/.config/bash .config/bash
-lnr DotFiles/.config/git .config/git
-lnr DotFiles/.hgrc .hgrc
+lnr dotfiles/.bashrc .bashrc
+lnr dotfiles/.config/bash .config/bash
+lnr dotfiles/.config/git .config/git
+lnr dotfiles/.hgrc .hgrc
