@@ -1,6 +1,6 @@
 [user]
-email = lordofthemaracas@gmail.com
-name = Calcifer
+	email = iangboll@vt.edu
+	name = Ian Boll
 
 [push]
 default = simple
@@ -19,8 +19,8 @@ glog = format:%C(bold green)%h%C(reset) %C(bold blue)%ad%C(reset) (%C(cyan)%ar%C
 
 [alias]
 glog = !git --no-pager log --color --graph -n 10 --pretty=glog --all
-
 glogl = log --graph --pretty=glog --all
+st = status
 
 [color "decorate"]
 tag = dim red
