@@ -1,2 +1,5 @@
 # Visual Studio Code's directory-specific configuration data
 .vscode
+
+# vim's default session file
+Session.vim
