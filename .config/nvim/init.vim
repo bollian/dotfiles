@@ -12,15 +12,17 @@ Plug 'wesq3/vim-windowswap'
 Plug 'moll/vim-bbye'
 Plug 'scrooloose/syntastic'
 Plug 'tomtom/tcomment_vim'
+Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+
+" Language IDE support
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
     \ }
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install() }}
-Plug 'tpope/vim-obsession'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-speeddating'
+Plug 'OmniSharp/omnisharp-vim'
 
 " Aesthetic/UI plugins
 Plug 'joshdick/onedark.vim'
@@ -66,11 +68,17 @@ inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 set hidden
 
 let g:LanguageClient_serverCommands = {
-    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'nightly', 'rls'],
     \ 'python': ['python3', '-m', 'pyls'],
     \ 'cpp': ['clangd'],
     \ 'c': ['clangd']
     \ }
+
+" Use stdio async omnisharp server
+let g:OmniSharp_server_stdio = 1
+" Manual installation location
+let g:OmniSharp_server_path = '/home/bollian/bin/omnisharp/run'
+let g:syntastic_cs_checkers = ['code_checker']
 
 " Enable and select color schemes
 syntax on
@@ -82,9 +90,6 @@ set cursorline
 
 " Prevent the window from resizing due to the gitgutter being added
 set signcolumn=yes
-
-" Use Coc to jump to definition
-nnoremap <c-]> :call CocAction('jumpDefinition')<cr>
 
 " use normal regex when searching in normal/visual mode
 nnoremap / /\v
