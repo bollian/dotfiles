@@ -21,6 +21,7 @@ glog = format:%C(bold green)%h%C(reset) %C(bold blue)%ad%C(reset) (%C(cyan)%ar%C
 glog = !git --no-pager log --color --graph -n 10 --pretty=glog --all
 glogl = log --graph --pretty=glog --all
 st = status
+ch = checkout
 
 [color "decorate"]
 tag = dim red
