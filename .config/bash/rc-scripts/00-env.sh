@@ -1,5 +1,4 @@
-export GOPATH="${HOME}/code/go"
-export PATH="$GOPATH/bin:$PATH"
+export PATH="${HOME}/.cargo/bin:$PATH"
 
 PS_RESET='\[\e[0m\]'
 PS_BOLD='\[\e[1m\]'
