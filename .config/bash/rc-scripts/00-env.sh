@@ -1,4 +1,14 @@
-export PATH="${HOME}/.cargo/bin:$PATH"
+prepend_path() {
+    case ":${PATH:=$1}:" in   # adds the new directory if PATH is empty, returns PATH otherwise
+        *:"$1":*)          ;; # already included, don't add to PATH
+        *) PATH="$1:$PATH" ;; # prepend the new directory
+    esac
+}
+
+export GOPATH="$HOME/code/go"
+
+prepend_path "$HOME/.cargo/bin"
+prepend_path "$GOPATH/bin"
 
 PS_RESET='\[\e[0m\]'
 PS_BOLD='\[\e[1m\]'
