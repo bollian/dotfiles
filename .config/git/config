@@ -32,3 +32,4 @@ HEAD = green reverse
 [core]
 	autocrlf = input
 	excludesfile = ~/.config/git/ignore
+	editor = nvim
