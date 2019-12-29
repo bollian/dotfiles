@@ -1,0 +1,11 @@
+[commands.swipe.three]
+up = "xdotool key shift+F4"
+down = "xdotool key ctrl+shift+L"
+left = "xdotool key super+Left"
+right = "xdotool key super+Right"
+
+[commands.swipe.four]
+up = "qdbus org.kde.kglobalaccel /component/kwin invokeShortcut ShowDesktopGrid"
+down = "qdbus org.kde.kglobalaccel /component/kwin invokeShortcut Expose"
+left = "qdbus org.kde.KWin /KWin org.kde.KWin.nextDesktop"
+right = "qdbus org.kde.KWin /KWin org.kde.KWin.previousDesktop"
