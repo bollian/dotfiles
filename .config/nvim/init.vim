@@ -168,8 +168,3 @@ nnoremap <silent> K :call LanguageClient_textDocument_hover()<cr>
 nnoremap <silent> gd :call LanguageClient_textDocument_definition()<cr>
 nnoremap <silent> <leader>r :call LanguageClient_textDocument_rename()<cr>
 nnoremap <silent> <leader>u :call LanguageClient_textDocument_references()<cr>
-" Tabularize shortcuts
-nnoremap <silent> <leader>a= :Tabularize /=<cr>
-vnoremap <silent> <leader>a= :Tabularize /=<cr>
-nnoremap <silent> <leader>a: :Tabularize /:\zs<cr>
-vnoremap <silent> <leader>a: :Tabularize /:\zs<cr>
