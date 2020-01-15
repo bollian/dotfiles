@@ -73,6 +73,10 @@ set smartcase
 " and airline already shows the mode
 set noshowmode
 
+" persist undo history between sessions
+set undofile
+set undodir=~/.local/share/nvim/undo/
+
 " List all open buffers at the top of the screen
 let g:airline#extensions#tabline#enabled = 1
 
@@ -125,18 +129,32 @@ colorscheme onedark
 let g:airline_theme='onedark'
 
 " create a homerow shortcut for escape
-inoremap <silent> <c-j> <esc>
-vnoremap <silent> <c-j> <esc>
-nnoremap <silent> <c-j> <esc>
-snoremap <silent> <c-j> <esc>
-tnoremap <silent> <c-j> <c-\><c-n>
-" easier horizontal window navigation
-vmap <silent> <c-l> <c-j><c-w>l
-imap <silent> <c-l> <c-j><c-w>l
-nmap <silent> <c-l> <c-j><c-w>l
-vmap <silent> <c-h> <c-j><c-w>h
-imap <silent> <c-h> <c-j><c-w>h
-nmap <silent> <c-h> <c-j><c-w>h
+inoremap <silent> <c-space> <esc>
+vnoremap <silent> <c-space> <esc>
+nnoremap <silent> <c-space> <esc>
+snoremap <silent> <c-space> <esc>
+tnoremap <silent> <c-space> <c-\><c-n>
+" easier window navigation
+vmap <silent> <c-l> <c-space><c-w>l
+imap <silent> <c-l> <c-space><c-w>l
+nmap <silent> <c-l> <c-space><c-w>l
+smap <silent> <c-l> <c-space><c-w>l
+tmap <silent> <c-l> <c-space><c-w>l
+vmap <silent> <c-h> <c-space><c-w>h
+imap <silent> <c-h> <c-space><c-w>h
+nmap <silent> <c-h> <c-space><c-w>h
+smap <silent> <c-h> <c-space><c-w>h
+tmap <silent> <c-h> <c-space><c-w>h
+vmap <silent> <c-j> <c-space><c-w>j
+imap <silent> <c-j> <c-space><c-w>j
+nmap <silent> <c-j> <c-space><c-w>j
+smap <silent> <c-j> <c-space><c-w>j
+tmap <silent> <c-j> <c-space><c-w>j
+vmap <silent> <c-k> <c-space><c-w>k
+imap <silent> <c-k> <c-space><c-w>k
+nmap <silent> <c-k> <c-space><c-w>k
+smap <silent> <c-k> <c-space><c-w>k
+tmap <silent> <c-k> <c-space><c-w>k
 
 " Specialized mappings just for me :)
 let mapleader = ' '
