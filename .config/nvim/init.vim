@@ -15,18 +15,20 @@ Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
-Plug 'airblade/vim-rooter'
+" Plug 'airblade/vim-rooter'
 
 " Language IDE support
 Plug 'editorconfig/editorconfig-vim'
 Plug 'lervag/vimtex'
 Plug 'arm9/arm-syntax-vim'
 Plug 'ncm2/ncm2'
+Plug 'ncm2/ncm2-path'
 Plug 'roxma/nvim-yarp' " required by ncm2, blech
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
+" Plug 'autozimu/LanguageClient-neovim', {
+"     \ 'branch': 'next',
+"     \ 'do': 'bash install.sh',
+"     \ }
+Plug 'neovim/nvim-lsp'
 
 " Aesthetic plugins
 Plug 'joshdick/onedark.vim'
@@ -46,8 +48,17 @@ set listchars=tab:→\ ,space:·,nbsp:␣,trail:•,eol:¶,precedes:«,extends:�
 " Line number gutter configuration
 set number relativenumber
 
+" Show when I'm in an open fold
+set foldcolumn=1
+
+" Automatically close folds
+set foldclose=all
+
 " Keep the cursor 10 lines from the top/bottom of the screen
 set scrolloff=10
+
+" Automatically hit enter for me
+set textwidth=80
 
 " Extra file types
 au BufRead,BufNewFile *.glslv setfiletype glsl
@@ -80,26 +91,17 @@ set undodir=~/.local/share/nvim/undo/
 " List all open buffers at the top of the screen
 let g:airline#extensions#tabline#enabled = 1
 
+" just display a colored line for the git diff
+let g:gitgutter_sign_added = '│'
+let g:gitgutter_sign_modified = '│'
+let g:gitgutter_sign_removed = '_'
+let g:gitgutter_sign_modified_removed = '│_'
+
 " netrw configuration
 let g:netrw_liststyle = 3 " use tree view by default
 let g:netrw_banner = 0    " turn off the help banner
 let g:netrw_winsize = 25  " default window size
 let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro' " add line numbers to netrw
-
-" tab-triggered completion in insert mode
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-
-let g:LanguageClient_waitOutputTimeout = 60
-let g:LanguageClient_serverCommands = {
-    \ 'c': ['clangd'],
-    \ 'cpp': ['clangd'],
-    \ 'python': ['python3', '-m', 'pyls'],
-    \ 'rust': ['~/.cargo/bin/rls'],
-    \ 'typescript': ['typescript-language-server', '--stdio'],
-    \ 'javascript': ['typescript-language-server', '--stdio'],
-    \ 'cs': [expand('~/bin/omnisharp/logged-runner.sh'), '--languageserver']
-    \ }
 
 " Prefer vimtex to latex-box
 let g:polyglot_disabled = ['latex']
@@ -107,13 +109,58 @@ let g:polyglot_disabled = ['latex']
 " filetype detection for arm assembly files to enable syntax highlighting
 au BufNewFile,BufRead *_armv8.s,*_armv8.S set filetype=arm
 
-" store language server logs
-let g:LanguageClient_loggingFile = expand('~/.local/share/nvim/language-client.log')
+" tab-triggered completion in insert mode
+inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+
+" (2020-03-05) rust_analyzer isn't quite ready for prime-time
+" lua require'nvim_lsp'.rust_analyzer.setup({on_init = require'ncm2'.register_lsp_source})
+lua require'nvim_lsp'.rls.setup{on_init = require'ncm2'.register_lsp_source}
+lua require'nvim_lsp'.pyls.setup{on_init = require'ncm2'.register_lsp_source}
+lua require'nvim_lsp'.clangd.setup{on_init = require'ncm2'.register_lsp_source}
+lua require'nvim_lsp'.gopls.setup{on_init = require'ncm2'.register_lsp_source}
+lua require'nvim_lsp'.tsserver.setup{on_init = require'ncm2'.register_lsp_source}
+
+function SetLspMappings()
+    nnoremap <buffer> <silent> <c-]>          <cmd>lua vim.lsp.buf.declaration()<cr>
+    nnoremap <buffer> <silent> gd             <cmd>lua vim.lsp.buf.definition()<cr>
+    nnoremap <buffer> <silent> K              <cmd>lua vim.lsp.buf.hover()<cr>
+    nnoremap <buffer> <silent> gD             <cmd>lua vim.lsp.buf.implementation()<cr>
+    nnoremap <buffer> <silent> <c-k>          <cmd>lua vim.lsp.buf.signature_help()<cr>
+    nnoremap <buffer> <silent> 1gD            <cmd>lua vim.lsp.buf.type_definition()<cr>
+    nnoremap <buffer> <silent> gr             <cmd>lua vim.lsp.buf.references()<cr>
+    nnoremap <buffer> <silent> <localleader>r <cmd>lua vim.lsp.buf.rename()<cr>
+endfunction
+
+augroup lsp_mappings
+    autocmd!
+    autocmd FileType rust,c,cpp,javascript,typescript,python :call SetLspMappings()
+augroup END
 
 " enable ncm2 for all buffers
 autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
-let g:ncm2#popup_limit = 20 " display 20 items at most
+" let g:ncm2#popup_limit = 20 " display 20 items at most
+set pumheight=20 " display 20 items at most
+
+" let g:LanguageClient_waitOutputTimeout = 60
+" let g:LanguageClient_serverCommands = {
+"     \ 'c': ['clangd'],
+"     \ 'cpp': ['clangd'],
+"     \ 'python': ['python3', '-m', 'pyls'],
+"     \ 'rust': ['~/.cargo/bin/rls'],
+    " \ 'rust': ['~/.cargo/bin/rust-analyzer'],
+"     \ 'typescript': ['typescript-language-server', '--stdio'],
+"     \ 'javascript': ['typescript-language-server', '--stdio'],
+"     \ 'cs': [expand('~/bin/omnisharp/logged-runner.sh'), '--languageserver']
+" \ }
+
+" get rid of the gutter error indicators - I use the gutter for git,
+" and I already have the virtual text
+" let g:LanguageClient_diagnosticsSignsMax = 0
+
+" store language server logs
+" let g:LanguageClient_loggingFile = expand('~/.local/share/nvim/language-client.log')
 
 " show function signatures in the command line
 let g:echodoc#enable_at_startup = 1
@@ -122,6 +169,8 @@ let g:echodoc#enable_at_startup = 1
 let g:OmniSharp_server_stdio = 1
 " Manual installation location
 let g:OmniSharp_server_path = expand('~/bin/omnisharp/run')
+
+let g:EditorConfig_max_line_indicator = "line"
 
 " Enable and select color schemes
 syntax on
@@ -158,31 +207,27 @@ tmap <silent> <c-k> <c-space><c-w>k
 
 " Specialized mappings just for me :)
 let mapleader = ' '
+let maplocalleader = ' '
 " quickly switch back to previous buffer
-nnoremap <leader><space> :b#<cr>
+nnoremap <leader><space> <cmd>b#<cr>
 " easier way to clear search highlighting
-nnoremap <leader>n :noh<cr>
+nnoremap <leader>n <cmd>noh<cr>
 " delete a buffer without deleting the window
-nnoremap <leader>q :Bdelete<cr>
+nnoremap <leader>q <cmd>Bdelete<cr>
 " Open the file explorer in the current window
-nnoremap <leader>t :Explore<cr>
+nnoremap <leader>t <cmd>Explore<cr>
 " Quickly splitting windows
 nnoremap <leader>v <C-w>v
 " Searching with fzf
-nnoremap <leader>f :Files<cr>
-nnoremap <leader>b :Buffers<cr>
-nnoremap <leader>g :Rg<cr>
-nnoremap <leader>c :Commands<cr>
-nnoremap <leader>h :Helptags<cr>
+nnoremap <leader>f <cmd>Files<cr>
+nnoremap <leader>b <cmd>Buffers<cr>
+nnoremap <leader>g <cmd>Rg<cr>
+nnoremap <leader>c <cmd>Commands<cr>
+nnoremap <leader>h <cmd>Helptags<cr>
 " Session management
-nnoremap <leader>ss :Obsess<cr>
-nnoremap <leader>sd :Obsess!<cr>
+nnoremap <leader>ss <cmd>Obsess<cr>
+nnoremap <leader>sd <cmd>Obsess!<cr>
 " Quick and easy scratchpad
-nnoremap <leader>so :Scratch<cr>
+nnoremap <leader>so <cmd>Scratch<cr>
 " Quick, section-based folding
 nnoremap <leader>z zfi{
-" LanguageClient integration
-nnoremap <silent> K :call LanguageClient_textDocument_hover()<cr>
-nnoremap <silent> gd :call LanguageClient_textDocument_definition()<cr>
-nnoremap <silent> <leader>r :call LanguageClient_textDocument_rename()<cr>
-nnoremap <silent> <leader>u :call LanguageClient_textDocument_references()<cr>
