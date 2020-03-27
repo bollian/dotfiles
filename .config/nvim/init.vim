@@ -126,7 +126,7 @@ function SetLspMappings()
     nnoremap <buffer> <silent> gd             <cmd>lua vim.lsp.buf.definition()<cr>
     nnoremap <buffer> <silent> K              <cmd>lua vim.lsp.buf.hover()<cr>
     nnoremap <buffer> <silent> gD             <cmd>lua vim.lsp.buf.implementation()<cr>
-    nnoremap <buffer> <silent> <c-k>          <cmd>lua vim.lsp.buf.signature_help()<cr>
+    " nnoremap <buffer> <silent> <c-k>          <cmd>lua vim.lsp.buf.signature_help()<cr>
     nnoremap <buffer> <silent> 1gD            <cmd>lua vim.lsp.buf.type_definition()<cr>
     nnoremap <buffer> <silent> gr             <cmd>lua vim.lsp.buf.references()<cr>
     nnoremap <buffer> <silent> <localleader>r <cmd>lua vim.lsp.buf.rename()<cr>
@@ -134,13 +134,12 @@ endfunction
 
 augroup lsp_mappings
     autocmd!
-    autocmd FileType rust,c,cpp,javascript,typescript,python :call SetLspMappings()
+    autocmd FileType rust,c,cpp,javascript,typescript,python,go :call SetLspMappings()
 augroup END
 
 " enable ncm2 for all buffers
 autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
-" let g:ncm2#popup_limit = 20 " display 20 items at most
 set pumheight=20 " display 20 items at most
 
 " let g:LanguageClient_waitOutputTimeout = 60
