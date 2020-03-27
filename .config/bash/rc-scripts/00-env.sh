@@ -9,6 +9,7 @@ export GOPATH="$HOME/code/go"
 
 prepend_path "$HOME/.cargo/bin"
 prepend_path "$GOPATH/bin"
+prepend_path "$HOME/.local/bin"
 
 PS_RESET='\[\e[0m\]'
 PS_BOLD='\[\e[1m\]'
