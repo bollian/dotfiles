@@ -1,0 +1,12 @@
+[Unit]
+Description=Service for handling touchpad gestures
+
+[Service]
+Type=forking
+TimeoutStartSec=0
+
+# the %h is substituted with the user's home directory
+ExecStart=/snap/bin/ksuperkey
+
+[Install]
+WantedBy=default.target
