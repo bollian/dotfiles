@@ -8,6 +8,7 @@ Plug 'duff/vim-scratch'
 Plug 'kshenoy/vim-signature'
 Plug 'vim-airline/vim-airline'
 Plug 'Shougo/echodoc.vim'
+Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " Editing functionality
 Plug 'moll/vim-bbye'
@@ -15,7 +16,6 @@ Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
-" Plug 'airblade/vim-rooter'
 
 " Language IDE support
 Plug 'editorconfig/editorconfig-vim'
@@ -24,11 +24,8 @@ Plug 'arm9/arm-syntax-vim'
 Plug 'ncm2/ncm2'
 Plug 'ncm2/ncm2-path'
 Plug 'roxma/nvim-yarp' " required by ncm2, blech
-" Plug 'autozimu/LanguageClient-neovim', {
-"     \ 'branch': 'next',
-"     \ 'do': 'bash install.sh',
-"     \ }
 Plug 'neovim/nvim-lsp'
+Plug 'liuchengxu/vista.vim'
 
 " Aesthetic plugins
 Plug 'joshdick/onedark.vim'
@@ -88,6 +85,29 @@ set noshowmode
 set undofile
 set undodir=~/.local/share/nvim/undo/
 
+" allow window switching and text selection w/ a mouse
+set mouse=a
+
+" use LSP whenever possible, but keep the default as ctags
+" there seems to be some stability issues when trying the finder using nvim_lsp
+" on a file that doesn't have a language server
+let g:vista_executive_for = {
+\   'rust': 'nvim_lsp',
+\   'go': 'nvim_lsp',
+\   'python': 'nvim_lsp',
+\   'cpp': 'nvim_lsp',
+\   'c': 'nvim_lsp',
+\   'typescript': 'nvim_lsp',
+\   'javascript': 'nvim_lsp'
+\ }
+" disable the cursor blink that occurs when jumping to a symbol w/ vista
+let g:vista_blink = [0, 0]
+" the vista coloration is really erratic for some reason
+let g:vista_keep_fzf_colors = 1
+" there are already markers for the symbol types
+let g:vista#renderer#enable_icon = 0
+let g:vista_fzf_preview = ['right:40%']
+
 " List all open buffers at the top of the screen
 let g:airline#extensions#tabline#enabled = 1
 
@@ -97,7 +117,11 @@ let g:gitgutter_sign_modified = '│'
 let g:gitgutter_sign_removed = '_'
 let g:gitgutter_sign_modified_removed = '│_'
 
+" default max number of signs is 500. causes problems with large files
+let g:gitgutter_max_signs = 1000
+
 " netrw configuration
+" keeping just in case I need to use netrw for some particular purpose
 let g:netrw_liststyle = 3 " use tree view by default
 let g:netrw_banner = 0    " turn off the help banner
 let g:netrw_winsize = 25  " default window size
@@ -113,9 +137,8 @@ au BufNewFile,BufRead *_armv8.s,*_armv8.S set filetype=arm
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 
-" (2020-03-05) rust_analyzer isn't quite ready for prime-time
-" lua require'nvim_lsp'.rust_analyzer.setup({on_init = require'ncm2'.register_lsp_source})
-lua require'nvim_lsp'.rls.setup{on_init = require'ncm2'.register_lsp_source}
+lua require'nvim_lsp'.rust_analyzer.setup({on_init = require'ncm2'.register_lsp_source})
+" lua require'nvim_lsp'.rls.setup{on_init = require'ncm2'.register_lsp_source}
 lua require'nvim_lsp'.pyls.setup{on_init = require'ncm2'.register_lsp_source}
 lua require'nvim_lsp'.clangd.setup{on_init = require'ncm2'.register_lsp_source}
 lua require'nvim_lsp'.gopls.setup{on_init = require'ncm2'.register_lsp_source}
@@ -137,29 +160,78 @@ augroup lsp_mappings
     autocmd FileType rust,c,cpp,javascript,typescript,python,go :call SetLspMappings()
 augroup END
 
+augroup defx_configuration
+    autocmd!
+    autocmd FileType defx call s:defx_my_settings()
+    autocmd BufLeave,BufWinLeave  \[defx\]* call defx#call_action('add_session')
+augroup END
+" autocmd FileType defx call s:defx_my_settings()
+function! s:defx_my_settings() abort
+    " I like line numbers, and defx disables them by default
+    set number relativenumber
+
+    " Define mappings
+    nnoremap <silent><buffer><expr> <cr>
+    \ defx#is_directory() ?
+    \ defx#do_action('open_tree', ['toggle', 'nested']) :
+    \ defx#do_action('open')
+    nnoremap <silent><buffer><expr> o
+    \ defx#do_action('open')
+    nnoremap <silent><buffer><expr> c
+    \ defx#do_action('copy')
+    nnoremap <silent><buffer><expr> m
+    \ defx#do_action('move')
+    nnoremap <silent><buffer><expr> p
+    \ defx#do_action('paste')
+    nnoremap <silent><buffer><expr> P
+    \ defx#do_action('preview')
+    nnoremap <silent><buffer><expr> D
+    \ defx#do_action('new_directory')
+    nnoremap <silent><buffer><expr> i
+    \ defx#do_action('new_file')
+    nnoremap <silent><buffer><expr> I
+    \ defx#do_action('new_multiple_files')
+    nnoremap <silent><buffer><expr> C
+    \ defx#do_action('toggle_columns',
+    \                'mark:indent:icon:filename:type')
+    nnoremap <silent><buffer><expr> S
+    \ defx#do_action('toggle_sort', 'time')
+    nnoremap <silent><buffer><expr> d
+    \ defx#do_action('remove')
+    nnoremap <silent><buffer><expr> r
+    \ defx#do_action('rename')
+    nnoremap <silent><buffer><expr> !
+    \ defx#do_action('execute_command')
+    nnoremap <silent><buffer><expr> x
+    \ defx#do_action('execute_system')
+    nnoremap <silent><buffer><expr> yy
+    \ defx#do_action('yank_path')
+    nnoremap <silent><buffer><expr> .
+    \ defx#do_action('toggle_ignored_files')
+    nnoremap <silent><buffer><expr> ;
+    \ defx#do_action('repeat')
+    nnoremap <silent><buffer><expr> u
+    \ defx#do_action('cd', ['..'])
+    nnoremap <silent><buffer><expr> ~
+    \ defx#do_action('cd')
+    nnoremap <silent><buffer><expr> q
+    \ defx#do_action('quit')
+    nnoremap <silent><buffer><expr> s
+    \ defx#do_action('toggle_select') . 'j'
+    nnoremap <silent><buffer><expr> *
+    \ defx#do_action('toggle_select_all')
+    nnoremap <silent><buffer><expr> j
+    \ line('.') == line('$') ? 'gg' : 'j'
+    nnoremap <silent><buffer><expr> k
+    \ line('.') == 1 ? 'G' : 'k'
+    " nnoremap <silent><buffer><expr> cd
+    " \ defx#do_action('change_vim_cwd')
+endfunction
+
 " enable ncm2 for all buffers
 autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
 set pumheight=20 " display 20 items at most
-
-" let g:LanguageClient_waitOutputTimeout = 60
-" let g:LanguageClient_serverCommands = {
-"     \ 'c': ['clangd'],
-"     \ 'cpp': ['clangd'],
-"     \ 'python': ['python3', '-m', 'pyls'],
-"     \ 'rust': ['~/.cargo/bin/rls'],
-    " \ 'rust': ['~/.cargo/bin/rust-analyzer'],
-"     \ 'typescript': ['typescript-language-server', '--stdio'],
-"     \ 'javascript': ['typescript-language-server', '--stdio'],
-"     \ 'cs': [expand('~/bin/omnisharp/logged-runner.sh'), '--languageserver']
-" \ }
-
-" get rid of the gutter error indicators - I use the gutter for git,
-" and I already have the virtual text
-" let g:LanguageClient_diagnosticsSignsMax = 0
-
-" store language server logs
-" let g:LanguageClient_loggingFile = expand('~/.local/share/nvim/language-client.log')
 
 " show function signatures in the command line
 let g:echodoc#enable_at_startup = 1
@@ -214,7 +286,7 @@ nnoremap <leader>n <cmd>noh<cr>
 " delete a buffer without deleting the window
 nnoremap <leader>q <cmd>Bdelete<cr>
 " Open the file explorer in the current window
-nnoremap <leader>t <cmd>Explore<cr>
+nnoremap <leader>t <cmd>Defx -new -show-ignored-files -columns=mark:indent:icon:filename:type:size:time -session-file=.defx-session<cr>
 " Quickly splitting windows
 nnoremap <leader>v <C-w>v
 " Searching with fzf
@@ -223,10 +295,12 @@ nnoremap <leader>b <cmd>Buffers<cr>
 nnoremap <leader>g <cmd>Rg<cr>
 nnoremap <leader>c <cmd>Commands<cr>
 nnoremap <leader>h <cmd>Helptags<cr>
+nnoremap <leader>m <cmd>Marks<cr>
+nnoremap <leader>j <cmd>Vista finder<cr>
 " Session management
 nnoremap <leader>ss <cmd>Obsess<cr>
 nnoremap <leader>sd <cmd>Obsess!<cr>
 " Quick and easy scratchpad
 nnoremap <leader>so <cmd>Scratch<cr>
 " Quick, section-based folding
-nnoremap <leader>z zfi{
+nnoremap <leader>z zfa{
