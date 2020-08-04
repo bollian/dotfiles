@@ -39,6 +39,8 @@ slnr .config/systemd/user/ksuperkey.service \
 slnr .config/systemd/user/hud-menu.service \
      .config/systemd/user/hud-menu.service
 slnr .config/gebaar/gebaard.toml .config/gebaar/gebaard.toml
+slnr .local/share/nvim/site/autoload/plug.vim \
+     .local/share/nvim/site/autoload/plug.vim
 
 # reload so that systemd picks up any new services
 systemctl --user daemon-reload
