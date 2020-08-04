@@ -128,6 +128,7 @@ let g:netrw_winsize = 25  " default window size
 let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro' " add line numbers to netrw
 
 " Prefer vimtex to latex-box
+let g:tex_flavor='xetex'
 let g:polyglot_disabled = ['latex']
 
 " filetype detection for arm assembly files to enable syntax highlighting
