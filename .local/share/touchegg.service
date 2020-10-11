@@ -1,12 +1,12 @@
 [Unit]
-Description=Service for handling touchpad gestures
+Description=Intercepts libinput touchpad gestures
 
 [Service]
 Type=simple
 TimeoutStartSec=0
 
 # the %h is substituted with the user's home directory
-ExecStart=%h/.local/bin/gebaard
+ExecStart=touchegg --daemon
 
 [Install]
-WantedBy=default.target
+WantedBy=graphical.target

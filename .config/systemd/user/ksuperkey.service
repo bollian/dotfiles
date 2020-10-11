@@ -1,5 +1,5 @@
 [Unit]
-Description=Service for handling touchpad gestures
+Description=Makes the logo button work properly in KDE plasma
 
 [Service]
 Type=forking
