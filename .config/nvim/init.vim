@@ -21,16 +21,21 @@ Plug 'tpope/vim-repeat'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'lervag/vimtex'
 Plug 'arm9/arm-syntax-vim'
-Plug 'ncm2/ncm2'
-Plug 'ncm2/ncm2-path'
-Plug 'roxma/nvim-yarp' " required by ncm2, blech
 Plug 'neovim/nvim-lsp'
-Plug 'liuchengxu/vista.vim'
+Plug 'tjdevries/lsp_extensions.nvim'
+Plug 'nvim-lua/completion-nvim'
+Plug 'nvim-lua/diagnostic-nvim'
+Plug 'nvim-lua/telescope.nvim'
+Plug 'nvim-lua/plenary.nvim' " dependency for telescope
+Plug 'nvim-lua/popup.nvim' " dependency for telescope
 
 " Aesthetic plugins
 Plug 'joshdick/onedark.vim'
 Plug 'sheerun/vim-polyglot'
 call plug#end()
+
+" No automatic word-wrapping
+set tw=0
 
 " Only redraw when necessary (makes macros run faster)
 set lazyredraw
@@ -120,46 +125,92 @@ let g:gitgutter_sign_modified_removed = '│_'
 " default max number of signs is 500. causes problems with large files
 let g:gitgutter_max_signs = 1000
 
-" netrw configuration
-" keeping just in case I need to use netrw for some particular purpose
-let g:netrw_liststyle = 3 " use tree view by default
-let g:netrw_banner = 0    " turn off the help banner
-let g:netrw_winsize = 25  " default window size
-let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro' " add line numbers to netrw
-
 " Prefer vimtex to latex-box
 let g:tex_flavor='xetex'
 let g:polyglot_disabled = ['latex']
 
 " filetype detection for arm assembly files to enable syntax highlighting
 au BufNewFile,BufRead *_armv8.s,*_armv8.S set filetype=arm
+" filetype detection for verilog
+au BufNewFile,BufRead *.v set filetype=verilog
 
 " tab-triggered completion in insert mode
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+" inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+" Trigger completion with <Tab>
+inoremap <silent><expr> <tab>
+  \ pumvisible() ? "\<c-n>" :
+  \ <sid>check_back_space() ? "\<tab>" :
+  \ completion#trigger_completion()
+inoremap <silent><expr> <s-tab>
+  \ pumvisible() ? "\<c-p>" :
+  \ <sid>check_back_space() ? "\<s-tab>" :
+  \ completion#trigger_completion()
 
-lua require'nvim_lsp'.rust_analyzer.setup({on_init = require'ncm2'.register_lsp_source})
-" lua require'nvim_lsp'.rls.setup{on_init = require'ncm2'.register_lsp_source}
-lua require'nvim_lsp'.pyls.setup{on_init = require'ncm2'.register_lsp_source}
-lua require'nvim_lsp'.clangd.setup{on_init = require'ncm2'.register_lsp_source}
-lua require'nvim_lsp'.gopls.setup{on_init = require'ncm2'.register_lsp_source}
-lua require'nvim_lsp'.tsserver.setup{on_init = require'ncm2'.register_lsp_source}
-
-function SetLspMappings()
-    nnoremap <buffer> <silent> <c-]>          <cmd>lua vim.lsp.buf.declaration()<cr>
-    nnoremap <buffer> <silent> gd             <cmd>lua vim.lsp.buf.definition()<cr>
-    nnoremap <buffer> <silent> K              <cmd>lua vim.lsp.buf.hover()<cr>
-    nnoremap <buffer> <silent> gD             <cmd>lua vim.lsp.buf.implementation()<cr>
-    " nnoremap <buffer> <silent> <c-k>          <cmd>lua vim.lsp.buf.signature_help()<cr>
-    nnoremap <buffer> <silent> 1gD            <cmd>lua vim.lsp.buf.type_definition()<cr>
-    nnoremap <buffer> <silent> gr             <cmd>lua vim.lsp.buf.references()<cr>
-    nnoremap <buffer> <silent> <localleader>r <cmd>lua vim.lsp.buf.rename()<cr>
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
+:lua <<EOF
+local nvim_lsp = require'nvim_lsp'
+
+local capabilities = {
+    textDocument = {
+        completion = {
+            completionItem = {
+                snippetSupport = false
+            }
+        }
+    }
+}
+
+local on_attach = function(client)
+    require'completion'.on_attach(client)
+    require'diagnostic'.on_attach(client)
+end
+
+local servers = {"rust_analyzer", "pyls", "clangd", "gopls", "tsserver", "texlab"}
+for _, server in ipairs(servers) do
+    nvim_lsp[server].setup{
+        on_attach = on_attach,
+        capabilities = capabilities,
+    }
+end
+EOF
+
+function SetLspMappings()
+    nnoremap <buffer> <silent> <c-]>     <cmd>lua vim.lsp.buf.definition()<cr>
+    nnoremap <buffer> <silent> K         <cmd>lua vim.lsp.buf.hover()<cr>
+    nnoremap <buffer> <silent> gD        <cmd>lua vim.lsp.buf.implementation()<cr>
+    nnoremap <buffer> <silent> <c-k>     <cmd>lua vim.lsp.buf.signature_help()<cr>
+    nnoremap <buffer> <silent> 1gD       <cmd>lua vim.lsp.buf.type_definition()<cr>
+    nnoremap <buffer> <silent> gr        <cmd>lua vim.lsp.buf.references()<cr>
+    nnoremap <buffer> <silent> g0        <cmd>lua vim.lsp.buf.document_symbol()<cr>
+    nnoremap <buffer> <silent> gW        <cmd>lua vim.lsp.buf.workspace_symbol()<cr>
+    nnoremap <buffer> <silent> gd        <cmd>lua vim.lsp.buf.declaration()<cr>
+    nnoremap <buffer> <silent> <leader>r <cmd>lua vim.lsp.buf.rename()<cr>
+endfunction
+
+" only set LSP mappings when entering a file with a supported langserver
 augroup lsp_mappings
     autocmd!
-    autocmd FileType rust,c,cpp,javascript,typescript,python,go :call SetLspMappings()
+    autocmd FileType rust,c,cpp,javascript,typescript,python,go,tex :call SetLspMappings()
 augroup END
+
+" Set updatetime for CursorHold
+" 300ms of no cursor movement to trigger CursorHold
+set updatetime=300
+" Show diagnostic popup on cursor hold
+autocmd CursorHold * lua vim.lsp.util.show_line_diagnostics()
+
+" Goto previous/next diagnostic warning/error
+nnoremap <silent> g[ <cmd>PrevDiagnosticCycle<cr>
+nnoremap <silent> g] <cmd>NextDiagnosticCycle<cr>
+
+" Enable type inlay hints
+autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
+\ lua require'lsp_extensions'.inlay_hints{prefix = '', highlight = "Comment"}
 
 augroup defx_configuration
     autocmd!
@@ -230,8 +281,9 @@ function! s:defx_my_settings() abort
 endfunction
 
 " enable ncm2 for all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
+" autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
+set shortmess+=c " avoid extra messages during completion
 set pumheight=20 " display 20 items at most
 
 " show function signatures in the command line
@@ -292,12 +344,15 @@ nnoremap <leader>t <cmd>Defx -new -show-ignored-files -columns=mark:indent:icon:
 nnoremap <leader>v <C-w>v
 " Searching with fzf
 nnoremap <leader>f <cmd>Files<cr>
+" nnoremap <leader>f <cmd>lua require'telescope.builtin'.find_files{}<cr>
 nnoremap <leader>b <cmd>Buffers<cr>
-nnoremap <leader>g <cmd>Rg<cr>
+" nnoremap <leader>g <cmd>Rg<cr>
+nnoremap <leader>g <cmd>lua require'telescope.builtin'.live_grep{}<cr>
 nnoremap <leader>c <cmd>Commands<cr>
 nnoremap <leader>h <cmd>Helptags<cr>
 nnoremap <leader>m <cmd>Marks<cr>
-nnoremap <leader>j <cmd>Vista finder<cr>
+nnoremap <leader>j <cmd>lua require'telescope.builtin'.lsp_document_symbols{}<cr>
+nnoremap <leader>J <cmd>lua require'telescope.builtin'.lsp_workspace_symbols{}<cr>
 " Session management
 nnoremap <leader>ss <cmd>Obsess<cr>
 nnoremap <leader>sd <cmd>Obsess!<cr>
