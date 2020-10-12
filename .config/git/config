@@ -32,4 +32,10 @@ HEAD = green reverse
 [core]
 	autocrlf = input
 	excludesfile = ~/.config/git/ignore
-	editor = nvim
+	editor = nano
+[url "https://invent.kde.org/"]
+	insteadOf = kde:
+[url "ssh://git@invent.kde.org/"]
+	pushInsteadOf = kde:
+[pull]
+	ff = only

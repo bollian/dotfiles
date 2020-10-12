@@ -1,10 +1,11 @@
+let g:polyglot_disabled = ['latex']
+
 " First, setup plugins
 call plug#begin('~/.local/share/nvim/plugged')
 " UI Elements
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-gitgutter'
-Plug 'duff/vim-scratch'
 Plug 'kshenoy/vim-signature'
 Plug 'vim-airline/vim-airline'
 Plug 'Shougo/echodoc.vim'
@@ -18,20 +19,19 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
 " Language IDE support
-Plug 'editorconfig/editorconfig-vim'
-Plug 'lervag/vimtex'
 Plug 'arm9/arm-syntax-vim'
-Plug 'neovim/nvim-lsp'
-Plug 'tjdevries/lsp_extensions.nvim'
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/lsp_extensions.nvim'
 Plug 'nvim-lua/completion-nvim'
-Plug 'nvim-lua/diagnostic-nvim'
 Plug 'nvim-lua/telescope.nvim'
+" Plug 'nvim-lua/lsp-status.nvim'
 Plug 'nvim-lua/plenary.nvim' " dependency for telescope
 Plug 'nvim-lua/popup.nvim' " dependency for telescope
 
 " Aesthetic plugins
 Plug 'joshdick/onedark.vim'
 Plug 'sheerun/vim-polyglot'
+Plug 'lervag/vimtex'
 call plug#end()
 
 " No automatic word-wrapping
@@ -41,7 +41,7 @@ set tw=0
 set lazyredraw
 
 " Tab configuration
-set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab
+set tabstop=4 softtabstop=-1 expandtab shiftwidth=4 smarttab
 
 " Show whitespace
 set list
@@ -53,7 +53,7 @@ set number relativenumber
 " Show when I'm in an open fold
 set foldcolumn=1
 
-" Automatically close folds
+" Automatically close folds when leaving them
 set foldclose=all
 
 " Keep the cursor 10 lines from the top/bottom of the screen
@@ -62,9 +62,13 @@ set scrolloff=10
 " Automatically hit enter for me
 set textwidth=80
 
-" Extra file types
+" filetype detection for glsl
 au BufRead,BufNewFile *.glslv setfiletype glsl
 au BufRead,BufNewFile *.glslf setfiletype glsl
+" filetype detection for arm assembly files to enable syntax highlighting
+au BufNewFile,BufRead *_armv8.s,*_armv8.S set filetype=arm
+" filetype detection for verilog
+au BufNewFile,BufRead *.v set filetype=verilog
 
 " Required for operations modifying multiple buffers like rename.
 set hidden
@@ -77,7 +81,9 @@ set signcolumn=yes
 
 " use normal regex when searching in normal/visual mode
 nnoremap / /\v
-vnoremap / /\v
+" search for highlighted text when entering search from visual mode
+vnoremap / y/\V<c-r>=escape(@",'/\')<cr><cr>
+
 " ignore casing when searching w/ all lower-case letters
 set ignorecase
 set smartcase
@@ -89,29 +95,6 @@ set noshowmode
 " persist undo history between sessions
 set undofile
 set undodir=~/.local/share/nvim/undo/
-
-" allow window switching and text selection w/ a mouse
-set mouse=a
-
-" use LSP whenever possible, but keep the default as ctags
-" there seems to be some stability issues when trying the finder using nvim_lsp
-" on a file that doesn't have a language server
-let g:vista_executive_for = {
-\   'rust': 'nvim_lsp',
-\   'go': 'nvim_lsp',
-\   'python': 'nvim_lsp',
-\   'cpp': 'nvim_lsp',
-\   'c': 'nvim_lsp',
-\   'typescript': 'nvim_lsp',
-\   'javascript': 'nvim_lsp'
-\ }
-" disable the cursor blink that occurs when jumping to a symbol w/ vista
-let g:vista_blink = [0, 0]
-" the vista coloration is really erratic for some reason
-let g:vista_keep_fzf_colors = 1
-" there are already markers for the symbol types
-let g:vista#renderer#enable_icon = 0
-let g:vista_fzf_preview = ['right:40%']
 
 " List all open buffers at the top of the screen
 let g:airline#extensions#tabline#enabled = 1
@@ -127,16 +110,7 @@ let g:gitgutter_max_signs = 1000
 
 " Prefer vimtex to latex-box
 let g:tex_flavor='xetex'
-let g:polyglot_disabled = ['latex']
 
-" filetype detection for arm assembly files to enable syntax highlighting
-au BufNewFile,BufRead *_armv8.s,*_armv8.S set filetype=arm
-" filetype detection for verilog
-au BufNewFile,BufRead *.v set filetype=verilog
-
-" tab-triggered completion in insert mode
-" inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-" inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 " Trigger completion with <Tab>
 inoremap <silent><expr> <tab>
   \ pumvisible() ? "\<c-n>" :
@@ -152,72 +126,88 @@ function! s:check_back_space() abort
     return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
-:lua <<EOF
-local nvim_lsp = require'nvim_lsp'
-
-local capabilities = {
-    textDocument = {
-        completion = {
-            completionItem = {
-                snippetSupport = false
+" Enable type inlay hints
+autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
+\ lua require'lsp_extensions'.inlay_hints{prefix = '', highlight = "NonText"}
+" set up the lsp settings for each language upon entering a buffer
+:lua << EOF
+    local lspconfig = require('lspconfig')
+    -- local lsp_status = require('lsp-status')
+    -- -- lsp_status.register_progress()
+    local buf_set_keymap = vim.api.nvim_buf_set_keymap
+    -- -- -- local capabilities = lsp_status.capabilities
+    -- -- -- capabilities.textDocument.completion.completionItem.snippetSupport = false
+    local capabilities = {
+        textDocument = {
+            completion = {
+                completionItem = {
+                    snippetSupport = false
+                }
             }
         }
     }
-}
 
-local on_attach = function(client)
-    require'completion'.on_attach(client)
-    require'diagnostic'.on_attach(client)
-end
+    local on_attach = function(client, bufnr)
+        require('completion').on_attach(client)
+        -- require('lsp_extensions').inlay_hints{prefix = '', highlight = 'NonText'}
+        -- lsp_status.on_attach(client, bufnr)
 
-local servers = {"rust_analyzer", "pyls", "clangd", "gopls", "tsserver", "texlab"}
-for _, server in ipairs(servers) do
-    nvim_lsp[server].setup{
-        on_attach = on_attach,
-        capabilities = capabilities,
+        local opts = { noremap=true, silent=true }
+        -- there are several goto def/impl/decl actions. this first one is my favorite
+        buf_set_keymap(bufnr, 'n', 'gd',             '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
+        buf_set_keymap(bufnr, 'n', '<c-]>',          '<cmd>lua vim.lsp.buf.definition()<cr>', opts) -- the traditional mapping
+
+        buf_set_keymap(bufnr, 'n', 'K',              '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
+        buf_set_keymap(bufnr, 'n', 'gD',             '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
+        buf_set_keymap(bufnr, 'n', '<c-k>',          '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
+        buf_set_keymap(bufnr, 'n', '1gD',            '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
+        buf_set_keymap(bufnr, 'n', 'gr',             '<cmd>lua vim.lsp.buf.references()<cr>', opts)
+        buf_set_keymap(bufnr, 'n', 'g0',             '<cmd>lua vim.lsp.buf.document_symbol()<cr>', opts)
+        buf_set_keymap(bufnr, 'n', 'gW',             '<cmd>lua vim.lsp.buf.workspace_symbol()<cr>', opts)
+        buf_set_keymap(bufnr, 'n', '<localleader>r', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
+        buf_set_keymap(bufnr, 'n', '<localleader>d', '<cmd>lua vim.lsp.util.show_line_diagnostics()<cr>', opts)
+
+        -- configuration for diagnostics
+        buf_set_keymap(bufnr, 'n', 'g[', '<cmd>lua vim.lsp.diagnostic.goto_prev()<cr>', opts)
+        buf_set_keymap(bufnr, 'n', 'g]', '<cmd>lua vim.lsp.diagnostic.goto_next()<cr>', opts)
+
+        -- TODO: add a mapping for goto implementation
+        -- buf_set_keymap(bufnr, 'n', 'gd',          '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
+    end
+
+    local servers = {
+        ["rust_analyzer"] = {},
+        ["pyls"] = {},
+        ["clangd"] = {},
+        ["gopls"] = {},
+        ["tsserver"] = {},
+        ["texlab"] = {},
+        ["bashls"] = {},
+        ["html"] = {},
+        ["cssls"] = {}
     }
-end
+    for lsp, setup_config in pairs(servers) do
+        -- these settings are shared among all the servers
+        setup_config.on_attach = on_attach
+        setup_config.capabilities = capabilities
+        lspconfig[lsp].setup(setup_config)
+    end
 EOF
 
-function SetLspMappings()
-    nnoremap <buffer> <silent> <c-]>     <cmd>lua vim.lsp.buf.definition()<cr>
-    nnoremap <buffer> <silent> K         <cmd>lua vim.lsp.buf.hover()<cr>
-    nnoremap <buffer> <silent> gD        <cmd>lua vim.lsp.buf.implementation()<cr>
-    nnoremap <buffer> <silent> <c-k>     <cmd>lua vim.lsp.buf.signature_help()<cr>
-    nnoremap <buffer> <silent> 1gD       <cmd>lua vim.lsp.buf.type_definition()<cr>
-    nnoremap <buffer> <silent> gr        <cmd>lua vim.lsp.buf.references()<cr>
-    nnoremap <buffer> <silent> g0        <cmd>lua vim.lsp.buf.document_symbol()<cr>
-    nnoremap <buffer> <silent> gW        <cmd>lua vim.lsp.buf.workspace_symbol()<cr>
-    nnoremap <buffer> <silent> gd        <cmd>lua vim.lsp.buf.declaration()<cr>
-    nnoremap <buffer> <silent> <leader>r <cmd>lua vim.lsp.buf.rename()<cr>
-endfunction
-
-" only set LSP mappings when entering a file with a supported langserver
-augroup lsp_mappings
-    autocmd!
-    autocmd FileType rust,c,cpp,javascript,typescript,python,go,tex :call SetLspMappings()
-augroup END
-
-" Set updatetime for CursorHold
-" 300ms of no cursor movement to trigger CursorHold
-set updatetime=300
-" Show diagnostic popup on cursor hold
-autocmd CursorHold * lua vim.lsp.util.show_line_diagnostics()
+set completeopt=noinsert,menuone,noselect
+set shortmess+=c " avoid extra messages during completion
+set pumheight=20 " display 20 items at most
 
 " Goto previous/next diagnostic warning/error
-nnoremap <silent> g[ <cmd>PrevDiagnosticCycle<cr>
-nnoremap <silent> g] <cmd>NextDiagnosticCycle<cr>
-
-" Enable type inlay hints
-autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
-\ lua require'lsp_extensions'.inlay_hints{prefix = '', highlight = "Comment"}
+" nnoremap <silent> g[ <cmd>PrevDiagnosticCycle<cr>
+" nnoremap <silent> g] <cmd>NextDiagnosticCycle<cr>
 
 augroup defx_configuration
     autocmd!
     autocmd FileType defx call s:defx_my_settings()
     autocmd BufLeave,BufWinLeave  \[defx\]* call defx#call_action('add_session')
 augroup END
-" autocmd FileType defx call s:defx_my_settings()
+
 function! s:defx_my_settings() abort
     " I like line numbers, and defx disables them by default
     set number relativenumber
@@ -225,7 +215,7 @@ function! s:defx_my_settings() abort
     " Define mappings
     nnoremap <silent><buffer><expr> <cr>
     \ defx#is_directory() ?
-    \ defx#do_action('open_tree', ['toggle', 'nested']) :
+    \ defx#do_action('open_tree', ['toggle']) :
     \ defx#do_action('open')
     nnoremap <silent><buffer><expr> o
     \ defx#do_action('open')
@@ -280,26 +270,14 @@ function! s:defx_my_settings() abort
     " \ defx#do_action('change_vim_cwd')
 endfunction
 
-" enable ncm2 for all buffers
-" autocmd BufEnter * call ncm2#enable_for_buffer()
-set completeopt=noinsert,menuone,noselect
-set shortmess+=c " avoid extra messages during completion
-set pumheight=20 " display 20 items at most
-
 " show function signatures in the command line
 let g:echodoc#enable_at_startup = 1
-
-" Use stdio async omnisharp server
-let g:OmniSharp_server_stdio = 1
-" Manual installation location
-let g:OmniSharp_server_path = expand('~/bin/omnisharp/run')
-
-let g:EditorConfig_max_line_indicator = "line"
 
 " Enable and select color schemes
 syntax on
 colorscheme onedark
-let g:airline_theme='onedark'
+let g:airline_theme = 'onedark'
+let g:airline_section_z = '%l/%L :%c'
 
 " create a homerow shortcut for escape
 inoremap <silent> <c-space> <esc>
@@ -346,8 +324,7 @@ nnoremap <leader>v <C-w>v
 nnoremap <leader>f <cmd>Files<cr>
 " nnoremap <leader>f <cmd>lua require'telescope.builtin'.find_files{}<cr>
 nnoremap <leader>b <cmd>Buffers<cr>
-" nnoremap <leader>g <cmd>Rg<cr>
-nnoremap <leader>g <cmd>lua require'telescope.builtin'.live_grep{}<cr>
+nnoremap <leader>g <cmd>Rg<cr>
 nnoremap <leader>c <cmd>Commands<cr>
 nnoremap <leader>h <cmd>Helptags<cr>
 nnoremap <leader>m <cmd>Marks<cr>
@@ -356,7 +333,5 @@ nnoremap <leader>J <cmd>lua require'telescope.builtin'.lsp_workspace_symbols{}<c
 " Session management
 nnoremap <leader>ss <cmd>Obsess<cr>
 nnoremap <leader>sd <cmd>Obsess!<cr>
-" Quick and easy scratchpad
-nnoremap <leader>so <cmd>Scratch<cr>
 " Quick, section-based folding
 nnoremap <leader>z zfa{
