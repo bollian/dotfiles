@@ -126,6 +126,9 @@ function! s:check_back_space() abort
     return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
+" highlight yanked text
+au TextYankPost * lua vim.highlight.on_yank {on_visual = false, timeout = 200}
+
 " Enable type inlay hints
 autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
 \ lua require'lsp_extensions'.inlay_hints{prefix = '', highlight = "NonText"}
