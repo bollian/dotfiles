@@ -1,0 +1,12 @@
+[Unit]
+Description=Distributed filesystem for the web
+
+[Service]
+Type=simple
+TimeoutStartSec=0
+
+# the %h is substituted with the user's home directory
+ExecStart=/snap/bin/ipfs daemon
+
+[Install]
+WantedBy=default.target
