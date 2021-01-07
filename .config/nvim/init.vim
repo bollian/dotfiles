@@ -9,7 +9,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'kshenoy/vim-signature'
 Plug 'vim-airline/vim-airline'
 Plug 'Shougo/echodoc.vim'
-Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'lambdalisue/fern.vim'
 
 " Editing functionality
 Plug 'moll/vim-bbye'
@@ -24,7 +24,6 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/lsp_extensions.nvim'
 Plug 'nvim-lua/completion-nvim'
 Plug 'nvim-lua/telescope.nvim'
-" Plug 'nvim-lua/lsp-status.nvim'
 Plug 'nvim-lua/plenary.nvim' " dependency for telescope
 Plug 'nvim-lua/popup.nvim' " dependency for telescope
 
@@ -135,11 +134,7 @@ autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
 " set up the lsp settings for each language upon entering a buffer
 :lua << EOF
     local lspconfig = require('lspconfig')
-    -- local lsp_status = require('lsp-status')
-    -- -- lsp_status.register_progress()
     local buf_set_keymap = vim.api.nvim_buf_set_keymap
-    -- -- -- local capabilities = lsp_status.capabilities
-    -- -- -- capabilities.textDocument.completion.completionItem.snippetSupport = false
     local capabilities = {
         textDocument = {
             completion = {
@@ -152,8 +147,6 @@ autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
 
     local on_attach = function(client, bufnr)
         require('completion').on_attach(client)
-        -- require('lsp_extensions').inlay_hints{prefix = '', highlight = 'NonText'}
-        -- lsp_status.on_attach(client, bufnr)
 
         local opts = { noremap=true, silent=true }
         -- there are several goto def/impl/decl actions. this first one is my favorite
@@ -201,77 +194,38 @@ set completeopt=noinsert,menuone,noselect
 set shortmess+=c " avoid extra messages during completion
 set pumheight=20 " display 20 items at most
 
-" Goto previous/next diagnostic warning/error
-" nnoremap <silent> g[ <cmd>PrevDiagnosticCycle<cr>
-" nnoremap <silent> g] <cmd>NextDiagnosticCycle<cr>
+" Fern config & mappings
+let g:fern#disable_default_mappings = 1
+let g:fern#default_hidden = 1
 
-augroup defx_configuration
-    autocmd!
-    autocmd FileType defx call s:defx_my_settings()
-    autocmd BufLeave,BufWinLeave  \[defx\]* call defx#call_action('add_session')
-augroup END
-
-function! s:defx_my_settings() abort
-    " I like line numbers, and defx disables them by default
-    set number relativenumber
-
-    " Define mappings
-    nnoremap <silent><buffer><expr> <cr>
-    \ defx#is_directory() ?
-    \ defx#do_action('open_tree', ['toggle']) :
-    \ defx#do_action('open')
-    nnoremap <silent><buffer><expr> o
-    \ defx#do_action('open')
-    nnoremap <silent><buffer><expr> c
-    \ defx#do_action('copy')
-    nnoremap <silent><buffer><expr> m
-    \ defx#do_action('move')
-    nnoremap <silent><buffer><expr> p
-    \ defx#do_action('paste')
-    nnoremap <silent><buffer><expr> P
-    \ defx#do_action('preview')
-    nnoremap <silent><buffer><expr> D
-    \ defx#do_action('new_directory')
-    nnoremap <silent><buffer><expr> i
-    \ defx#do_action('new_file')
-    nnoremap <silent><buffer><expr> I
-    \ defx#do_action('new_multiple_files')
-    nnoremap <silent><buffer><expr> C
-    \ defx#do_action('toggle_columns',
-    \                'mark:indent:icon:filename:type')
-    nnoremap <silent><buffer><expr> S
-    \ defx#do_action('toggle_sort', 'time')
-    nnoremap <silent><buffer><expr> d
-    \ defx#do_action('remove')
-    nnoremap <silent><buffer><expr> r
-    \ defx#do_action('rename')
-    nnoremap <silent><buffer><expr> !
-    \ defx#do_action('execute_command')
-    nnoremap <silent><buffer><expr> x
-    \ defx#do_action('execute_system')
-    nnoremap <silent><buffer><expr> yy
-    \ defx#do_action('yank_path')
-    nnoremap <silent><buffer><expr> .
-    \ defx#do_action('toggle_ignored_files')
-    nnoremap <silent><buffer><expr> ;
-    \ defx#do_action('repeat')
-    nnoremap <silent><buffer><expr> u
-    \ defx#do_action('cd', ['..'])
-    nnoremap <silent><buffer><expr> ~
-    \ defx#do_action('cd')
-    nnoremap <silent><buffer><expr> q
-    \ defx#do_action('quit')
-    nnoremap <silent><buffer><expr> s
-    \ defx#do_action('toggle_select') . 'j'
-    nnoremap <silent><buffer><expr> *
-    \ defx#do_action('toggle_select_all')
-    nnoremap <silent><buffer><expr> j
-    \ line('.') == line('$') ? 'gg' : 'j'
-    nnoremap <silent><buffer><expr> k
-    \ line('.') == 1 ? 'G' : 'k'
-    " nnoremap <silent><buffer><expr> cd
-    " \ defx#do_action('change_vim_cwd')
+function! s:init_fern() abort
+    " Use 'select' instead of 'edit' for default 'open' action
+    " nmap <buffer> <cr> <plug>(fern-action-open-or-expand)
+    nmap <buffer><expr>
+          \ <plug>(fern-my-open-or-expand-or-collapse)
+          \ fern#smart#leaf(
+          \   "\<Plug>(fern-action-open)",
+          \   "\<Plug>(fern-action-expand:stay)",
+          \   "\<Plug>(fern-action-collapse)",
+          \ )
+    nmap <buffer> <cr> <plug>(fern-my-open-or-expand-or-collapse)
+    nmap <buffer> o    <plug>(fern-action-open)
+    nmap <buffer> u    <plug>(fern-action-leave)
+    nmap <buffer> i    <plug>(fern-action-new-file)
+    nmap <buffer> d    <plug>(fern-action-new-dir)
+    nmap <buffer> D    <plug>(fern-action-remove)
+    nmap <buffer> y    <plug>(fern-action-yank)
+    nmap <buffer> x    <plug>(fern-action-move)
+    nmap <buffer> p    <plug>(fern-action-paste)
+    nmap <buffer> r    <plug>(fern-action-rename:below)
+    nmap <buffer> m    <plug>(fern-action-mark)
+    nmap <buffer> cm   <plug>(fern-action-mark:clear)
 endfunction
+
+augroup fern-custom
+    autocmd! *
+    autocmd FileType fern call s:init_fern()
+augroup END
 
 " show function signatures in the command line
 let g:echodoc#enable_at_startup = 1
@@ -320,7 +274,7 @@ nnoremap <leader>n <cmd>noh<cr>
 " delete a buffer without deleting the window
 nnoremap <leader>q <cmd>Bdelete<cr>
 " Open the file explorer in the current window
-nnoremap <leader>t <cmd>Defx -new -show-ignored-files -columns=mark:indent:icon:filename:type:size:time -session-file=.defx-session<cr>
+nnoremap <leader>t <cmd>Fern . -reveal=%<cr>
 " Quickly splitting windows
 nnoremap <leader>v <C-w>v
 " Searching with fzf
