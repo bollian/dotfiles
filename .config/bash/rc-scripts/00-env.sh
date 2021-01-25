@@ -16,3 +16,7 @@ PS_BOLD='\[\e[1m\]'
 PS_GREEN='\[\e[32m\]'
 PS_BLUE='\[\e[34m\]'
 export PS1="${PS_BOLD}${PS_GREEN}\u@\h ${PS_BLUE}\w \\$ ${PS_RESET}"
+
+# use rg to list files for fzf, with the effect that .gigignored files don't
+# show up
+export FZF_DEFAULT_COMMAND="rg --glob !.pijul --files --hidden"
