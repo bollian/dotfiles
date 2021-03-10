@@ -1,1 +1,2 @@
-autocmd BufWritePre <buffer> :RustFmt
+" autocmd BufWritePre <buffer> :RustFmt
+set nowrap
