@@ -10,7 +10,7 @@ require'nvim-treesitter.configs'.setup {
     ensure_installed = 'maintained',
     highlight = {
         enable = true,
-        disable = {'rust'} -- list of languages to disable
+        -- disable = {'rust', 'python'} -- list of languages to disable
     },
     incremental_selection = {
         enable = true,
@@ -19,11 +19,12 @@ require'nvim-treesitter.configs'.setup {
             node_incremental = 'sn',
             scope_incremental = 'ss',
             node_decremental = 'sd'
-        }
+        },
+        -- disable = {'rust'}
     },
     indent = {
         enable = true,
-        disable = {'rust'}
+        -- disable = {'rust', 'python'}
     },
     playground = {
         enable = true,

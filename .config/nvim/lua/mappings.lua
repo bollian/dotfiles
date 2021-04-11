@@ -59,4 +59,4 @@ nmap('<leader>J', '<cmd>lua require\'telescope.builtin\'.lsp_workspace_symbols{}
 nmap('<leader>ss', '<cmd>Obsess<cr>')
 nmap('<leader>sd', '<cmd>Obsess!<cr>')
 -- Convenient terminal window
-nmap('<leader>;', '<cmd>FloatermToggle<cr>')
+map_modes(nav_modes, '<c-y>', '<cmd>FloatermToggle<cr>')

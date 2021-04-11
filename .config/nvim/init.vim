@@ -13,6 +13,7 @@ Plug 'hoob3rt/lualine.nvim'
 Plug 'romgrk/barbar.nvim'
 Plug 'lambdalisue/fern.vim'
 Plug 'voldikss/vim-floaterm'
+Plug 'mfussenegger/nvim-dap'
 
 " Git
 Plug 'tpope/vim-fugitive'
@@ -24,14 +25,15 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
-" Intellisense support
+" LSP support
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/lsp_extensions.nvim'
 Plug 'nvim-lua/completion-nvim'
+Plug 'kosayoda/nvim-lightbulb'
 
 " Aesthetic plugins
 Plug 'joshdick/onedark.vim'
-Plug 'sheerun/vim-polyglot'
+" Plug 'sheerun/vim-polyglot'
 Plug 'arm9/arm-syntax-vim'
 Plug 'lervag/vimtex'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -68,6 +70,9 @@ colorscheme onedark
 "}}}
 
 "{{{ Plugin Options
+" show lightbulb for codeactions
+autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()
+
 " highlight the buffer line
 highlight link BufferCurrent       Title
 highlight link BufferCurrentMod    Title
@@ -78,9 +83,19 @@ let bufferline = get(g:, 'bufferline', {})
 let bufferline.animation = v:false
 let bufferline.icons = v:false
 
+" less aggressive highlighting
+highlight clear Identifier
+highlight clear Constant
+
+" use double-slash comments in c files
 call tcomment#type#Define('c', '// %s')
 call tcomment#type#Define('c_block', '/* %s */\n * ')
 call tcomment#type#Define('c_inline', '/* %s */')
+
+augroup ExtraFiletypes
+    autocmd!
+    autocmd BufRead,BufNewFile *.jl setfiletype julia
+augroup END
 
 " just display a colored line for the git diff
 let g:gitgutter_sign_added = '│'
@@ -112,10 +127,11 @@ function! s:init_fern() abort
     nmap <buffer><expr>
           \ <plug>(fern-my-open-or-expand-or-collapse)
           \ fern#smart#leaf(
-          \   "\<Plug>(fern-action-open)",
-          \   "\<Plug>(fern-action-expand:stay)",
-          \   "\<Plug>(fern-action-collapse)",
+          \   "\<plug>(fern-action-open)",
+          \   "\<plug>(fern-action-expand:stay)",
+          \   "\<plug>(fern-action-collapse)",
           \ )
+
     nmap <buffer> <cr> <plug>(fern-my-open-or-expand-or-collapse)
     nmap <buffer> o    <plug>(fern-action-open)
     nmap <buffer> u    <plug>(fern-action-leave)
@@ -128,6 +144,7 @@ function! s:init_fern() abort
     nmap <buffer> r    <plug>(fern-action-rename:below)
     nmap <buffer> m    <plug>(fern-action-mark)
     nmap <buffer> cm   <plug>(fern-action-mark:clear)
+    nmap <buffer> cd   <plug>(fern-action-cd)
 endfunction
 
 augroup fern-custom
@@ -170,3 +187,4 @@ lua require 'mappings'
 lua require 'treesitter'
 " lua require 'snippets-config'
 lua require 'statusline'
+lua require 'dap-config'
