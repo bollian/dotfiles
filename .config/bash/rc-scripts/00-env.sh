@@ -9,9 +9,10 @@ export GOPATH="$HOME/code/go"
 
 prepend_path "$GOPATH/bin"
 prepend_path "$HOME/.ghcup/bin"
+prepend_path "$HOME/.cabal/bin"
 prepend_path "$HOME/.cargo/bin"
 prepend_path "$HOME/.local/bin"
-eval "$(fnm env)"
+which fnm >/dev/null && eval "$(fnm env)"
 
 PS_RESET='\[\e[0m\]'
 PS_BOLD='\[\e[1m\]'
