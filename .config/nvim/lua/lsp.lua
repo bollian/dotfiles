@@ -17,8 +17,7 @@ local capabilities = {
 }
 
 local on_attach = function(client, bufnr)
-    require('completion').on_attach(client)
-
+  require 'lsp_signature'.on_attach()
     local opts = { noremap=true, silent=true }
     -- there are several goto def/impl/decl actions. this first one is my favorite
     buf_set_keymap(bufnr, 'n', 'gd',             '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
@@ -47,9 +46,25 @@ local on_attach = function(client, bufnr)
     -- buf_set_keymap(bufnr, 'n', 'gd',          '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
 end
 
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    virtual_text = true,
+    signs = true,
+    update_in_insert = true,
+  }
+)
+
+require('rust-tools').setup({
+    server = {
+        capabilities = capabilities,
+        on_attach = on_attach
+    }
+})
+
 local servers = {
-    ["rust_analyzer"] = {},
-    ["pyls"] = {},
+    -- rust is initialized by rust-tools
+    -- ["rust_analyzer"] = {},
+    ["pyright"] = {},
     ["clangd"] = {},
     ["gopls"] = {},
     ["tsserver"] = {},
@@ -57,7 +72,7 @@ local servers = {
     ["bashls"] = {},
     ["html"] = {},
     ["cssls"] = {},
-    ["julials"] = {}
+    -- ["julials"] = {}
 }
 for lsp, server_tweaks in pairs(servers) do
     -- these settings are shared among all the servers

@@ -7,9 +7,11 @@ prepend_path() {
 
 export GOPATH="$HOME/code/go"
 
-prepend_path "$HOME/.cargo/bin"
 prepend_path "$GOPATH/bin"
+prepend_path "$HOME/.ghcup/bin"
+prepend_path "$HOME/.cargo/bin"
 prepend_path "$HOME/.local/bin"
+eval "$(fnm env)"
 
 PS_RESET='\[\e[0m\]'
 PS_BOLD='\[\e[1m\]'
@@ -20,3 +22,5 @@ export PS1="${PS_BOLD}${PS_GREEN}\u@\h ${PS_BLUE}\w \\$ ${PS_RESET}"
 # use rg to list files for fzf, with the effect that .gigignored files don't
 # show up
 export FZF_DEFAULT_COMMAND="rg --glob !.pijul --files --hidden"
+
+export DOTNET_ROOT=/snap/dotnet-sdk/current

@@ -35,6 +35,14 @@ map_modes(nav_modes, '<c-k>', '<c-space><c-w>k', remap)
 map_modes(nav_modes, '<a-l>', '<c-space><cmd>tabn<cr>', remap)
 map_modes(nav_modes, '<a-h>', '<c-space><cmd>tabp<cr>', remap)
 
+-- quick vertical movement
+map_modes({'n', 'v'}, '}', '15j')
+map_modes({'n', 'v'}, '{', '15k')
+
+-- confirm so that compe can do snippets and stuff
+map_modes({'i'}, '<cr>', 'compe#confirm(\'<cr>\')', {expr = true})
+map_modes({'i'}, '<c-t>', 'compe#complete()', {expr = true})
+
 -- quickly switch back to previous buffer
 nmap('<leader><space>', '<cmd>b#<cr>')
 -- easier way to clear search highlighting
@@ -55,6 +63,7 @@ nmap('<leader>h', '<cmd>Helptags<cr>')
 nmap('<leader>m', '<cmd>Marks<cr>')
 nmap('<leader>j', '<cmd>lua require\'telescope.builtin\'.lsp_document_symbols{}<cr>')
 nmap('<leader>J', '<cmd>lua require\'telescope.builtin\'.lsp_workspace_symbols{}<cr>')
+nmap('<leader>y', '<cmd>Telescope neoclip<cr>')
 -- Session management
 nmap('<leader>ss', '<cmd>Obsess<cr>')
 nmap('<leader>sd', '<cmd>Obsess!<cr>')

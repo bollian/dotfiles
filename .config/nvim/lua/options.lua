@@ -2,85 +2,113 @@ local o = vim.o
 local wo = vim.wo
 local bo = vim.bo
 
--- support mouse selection, clicking, etc
-o.mouse = 'a'
+local function merge_into(target, extras)
+  for key, value in pairs(extras) do
+    target[key] = value
+  end
+end
 
--- no automatic word-wrapping
-bo.tw = 0
+-- vim.g.floaterm_shell = 'nu'
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
 
--- only redraw when necessary (makes macros run faster)
-o.lazyredraw = true
+merge_into(vim.opt, {
+  guifont = 'UbuntuMono Nerd Font Mono:h15', -- set the font when using a graphical interface
+  mouse = 'a', -- support mouse selection, clicking, etc
+  textwidth = 0, -- no automatic word-wrapping
+  lazyredraw = true, -- only redraw when necessary (makes macros run faster)
 
--- show whitespace
-wo.list = true
-o.listchars = 'tab:→ ,space:·,nbsp:␣,trail:•,eol:¶,precedes:«,extends:»'
+  -- show whitespace
+  list = true,
+  listchars = {
+    tab = '→ ',
+    space = '·',
+    nbsp = '␣',
+    trail = '•',
+    eol = '¶',
+    precedes = '«',
+    extends = '»',
+  },
 
--- show line numbers relative to the current position
-wo.number = true
-wo.relativenumber = true
+  -- show line numbers relative to the current position
+  number = true,
+  relativenumber = true,
 
--- Show when I'm in an open fold
-wo.foldcolumn = '1'
+  -- ignore casing when searching w/ all lower-case letters
+  ignorecase = true,
+  smartcase = true,
 
--- Automatically close folds when leaving them
-o.foldclose = 'all'
+  foldcolumn = '1', -- Show when I'm in an open fold
+  foldclose = 'all', -- Automatically close folds when leaving them
+  scrolloff = 10, -- Keep the cursor 10 lines from the top/bottom of the screen
+  textwidth = 80, -- Automatically hit enter for me
+  hidden = true, -- Required for operations modifying multiple buffers like rename.
+  cursorline = true, -- Highlight the line your cursor is on
+  signcolumn = 'yes', -- Prevent the window from resizing due to the gitgutter being added
+  showmode = false, -- hide the mode in the command line row (already shown by lualine)
+  undofile = true, -- persist undo history between sessions
+  -- shell = 'nu', -- use a specific default shell (this breaks fugitive)
 
--- Keep the cursor 10 lines from the top/bottom of the screen
-o.scrolloff = 10
-
--- Automatically hit enter for me
-bo.textwidth=80
-
--- Required for operations modifying multiple buffers like rename.
-o.hidden = true
-
--- Highlight the line your cursor is on
-wo.cursorline = true
-
--- Prevent the window from resizing due to the gitgutter being added
-wo.signcolumn = 'yes'
-
--- ignore casing when searching w/ all lower-case letters
-o.ignorecase = true
-o.smartcase = true
-
--- showmode hides the echodoc function signatures,
--- and airline already shows the mode
-o.showmode = false
-
--- persist undo history between sessions
-bo.undofile = true
+  -- exrc = true,
+})
 
 require'nvim-lightbulb'.update_lightbulb {
-    sign = {
-        enabled = true,
-        -- Priority of the gutter sign
-        priority = 100,
-        text = 'A'
-    },
-    float = {
-        enabled = false,
-        -- Text to show in the popup float
-        text = "💡",
-        -- Available keys for window options:
-        -- - height     of floating window
-        -- - width      of floating window
-        -- - wrap_at    character to wrap at for computing height
-        -- - max_width  maximal width of floating window
-        -- - max_height maximal height of floating window
-        -- - pad_left   number of columns to pad contents at left
-        -- - pad_right  number of columns to pad contents at right
-        -- - pad_top    number of lines to pad contents at top
-        -- - pad_bottom number of lines to pad contents at bottom
-        -- - offset_x   x-axis offset of the floating window
-        -- - offset_y   y-axis offset of the floating window
-        -- - anchor     corner of float to place at the cursor (NW, NE, SW, SE)
-        -- - winblend   transparency of the window (0-100)
-        win_opts = {},
-    },
-    virtual_text = {
-        enabled = false,
-        -- Text to show at virtual text
-        text = "💡",
-    }
+  sign = {
+    enabled = true,
+    -- Priority of the gutter sign
+    priority = 100,
+    text = 'A'
+  },
+  float = {
+    enabled = true,
+    -- Text to show in the popup float
+    text = "A",
+    win_opts = {},
+  },
+  virtual_text = {
+    enabled = false,
+    -- Text to show at virtual text
+    text = "A",
+  }
 }
+
+require'compe'.setup {
+  enabled = true,
+  autocomplete = true,
+  debug = false,
+  min_length = 1,
+  preselect = 'disable',
+  throttle_time = 80,
+  source_timeout = 200,
+  incomplete_delay = 400,
+  max_abbr_width = 100,
+  max_kind_width = 100,
+  max_menu_width = 100,
+  documentation = true,
+
+  source = {
+    path = true,
+    buffer = true,
+    calc = true,
+    nvim_lsp = true,
+    nvim_lua = true,
+    vsnip = true,
+  },
+}
+
+require'kommentary.config'.configure_language('default', {
+  prefer_single_line_comments = true,
+})
+
+require'nvim-autopairs'.setup()
+vim.notify = require('notify')
+
+require'neoclip'.setup{}
+
+-- require 'nvim-gps'.setup {
+--   icons = {
+--     ['class-name'] = 'C',
+--     ['function-name'] = 'f',
+--     ['method-name'] = 'm',
+--   }
+-- }

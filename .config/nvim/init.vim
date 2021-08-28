@@ -1,44 +1,12 @@
 let g:polyglot_disabled = ['latex']
 
-" First, setup plugins
-call plug#begin('~/.local/share/nvim/plugged')
-" UI Elements
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'nvim-lua/telescope.nvim'
-Plug 'nvim-lua/plenary.nvim' " dependency for telescope
-Plug 'nvim-lua/popup.nvim' " dependency for telescope
-Plug 'airblade/vim-gitgutter'
-Plug 'hoob3rt/lualine.nvim'
-Plug 'romgrk/barbar.nvim'
-Plug 'lambdalisue/fern.vim'
-Plug 'voldikss/vim-floaterm'
-Plug 'mfussenegger/nvim-dap'
-
-" Git
-Plug 'tpope/vim-fugitive'
-Plug 'rbong/vim-flog'
-
-" Editing functionality
-Plug 'tomtom/tcomment_vim'
-Plug 'tpope/vim-obsession'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
-
-" LSP support
-Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-lua/lsp_extensions.nvim'
-Plug 'nvim-lua/completion-nvim'
-Plug 'kosayoda/nvim-lightbulb'
-
-" Aesthetic plugins
-Plug 'joshdick/onedark.vim'
-" Plug 'sheerun/vim-polyglot'
-Plug 'arm9/arm-syntax-vim'
-Plug 'lervag/vimtex'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'nvim-treesitter/playground'
-call plug#end()
+lua require 'plugins'
+lua require 'options'
+lua require 'lsp'
+lua require 'mappings'
+lua require 'treesitter'
+lua require 'statusline'
+lua require 'dap-config'
 
 "{{{ General Options
 " Tab configuration
@@ -66,7 +34,9 @@ autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
 " Enable and select color schemes
 let g:onedark_terminal_italics = 1
 syntax on
-colorscheme onedark
+" colorscheme onedark
+let g:gruvbox_flat_style = "hard"
+colorscheme gruvbox-flat
 "}}}
 
 "{{{ Plugin Options
@@ -86,11 +56,7 @@ let bufferline.icons = v:false
 " less aggressive highlighting
 highlight clear Identifier
 highlight clear Constant
-
-" use double-slash comments in c files
-call tcomment#type#Define('c', '// %s')
-call tcomment#type#Define('c_block', '/* %s */\n * ')
-call tcomment#type#Define('c_inline', '/* %s */')
+highlight clear LspDiagnosticsUnderlineHint
 
 augroup ExtraFiletypes
     autocmd!
@@ -108,14 +74,6 @@ let g:gitgutter_max_signs = 1000
 
 " Prefer vimtex to latex-box
 let g:tex_flavor='xetex'
-
-let g:completion_chain_complete_list = {
-    \'default' : [
-    \    {'complete_items': ['lsp', 'snippet', 'path']},
-    \    {'mode': '<c-p>'},
-    \    {'mode': '<c-n>'}
-    \]
-\}
 
 " Fern config & mappings
 let g:fern#disable_default_mappings = 1
@@ -157,10 +115,6 @@ let g:echodoc#enable_at_startup = 1
 "}}}
 
 "{{{ Mappings
-" Specialized mappings just for me :)
-let mapleader = ' '
-let maplocalleader = ' '
-
 " use normal regex when searching in normal/visual mode
 nnoremap / /\v
 " search for highlighted text when entering search from visual mode
@@ -170,21 +124,11 @@ vnoremap / y/\V<c-r>=escape(@",'/\')<cr><cr>
 inoremap <silent><expr> <tab>
   \ pumvisible() ? "\<c-n>" :
   \ <sid>check_back_space() ? "\<tab>" :
-  \ completion#trigger_completion()
+  \ compe#complete()
 inoremap <silent><expr> <s-tab>
-  \ pumvisible() ? "\<c-p>" :
-  \ <sid>check_back_space() ? "\<s-tab>" :
-  \ completion#trigger_completion()
+  \ pumvisible() ? "\<c-p>" : "\<s-tab>"
 
 function! s:check_back_space() abort
     let col = col('.') - 1
     return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
-
-lua require 'lsp'
-lua require 'options'
-lua require 'mappings'
-lua require 'treesitter'
-" lua require 'snippets-config'
-lua require 'statusline'
-lua require 'dap-config'

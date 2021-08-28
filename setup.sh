@@ -32,6 +32,7 @@ slnr .bashrc      .bashrc
 slnr .config/bash .config/bash
 slnr .config/git  .config/git
 slnr .config/nvim .config/nvim
+slnr .config/starship.toml .config/starship.toml
 slnr .hgrc        .hgrc
 slnr .ssh/config  .ssh/config
 slnr .config/systemd/user/gebaard.service \

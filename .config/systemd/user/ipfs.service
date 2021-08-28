@@ -6,7 +6,7 @@ Type=simple
 TimeoutStartSec=0
 
 # the %h is substituted with the user's home directory
-ExecStart=/snap/bin/ipfs daemon
+ExecStart=/snap/bin/ipfs daemon --migrate
 
 [Install]
 WantedBy=default.target
