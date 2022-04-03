@@ -72,7 +72,8 @@ require'nvim-lightbulb'.update_lightbulb {
   }
 }
 
-require'compe'.setup {
+local cmp = require 'cmp'
+cmp.setup {
   enabled = true,
   autocomplete = true,
   debug = false,
@@ -86,6 +87,17 @@ require'compe'.setup {
   max_menu_width = 100,
   documentation = true,
 
+  sources = cmp.config.sources({
+    { name = 'path' },
+    { name = 'buffer' },
+    { name = 'calc' },
+    { name = 'nvim_lsp' },
+    { name = 'nvim_lua' },
+    { name = 'vsnip' }
+  }, {
+    { name = 'tags' }
+  }),
+
   source = {
     path = true,
     buffer = true,
@@ -94,6 +106,17 @@ require'compe'.setup {
     nvim_lua = true,
     vsnip = true,
   },
+
+  mapping = {
+    ['<Tab>'] = function(fallback)
+      local cmp = require 'cmp'
+      if cmp.visible() then
+        cmp.select_next_item()
+      else
+        fallback()
+      end
+    end
+  }
 }
 
 require'kommentary.config'.configure_language('default', {
@@ -101,14 +124,15 @@ require'kommentary.config'.configure_language('default', {
 })
 
 require'nvim-autopairs'.setup()
-vim.notify = require('notify')
 
 require'neoclip'.setup{}
 
--- require 'nvim-gps'.setup {
---   icons = {
---     ['class-name'] = 'C',
---     ['function-name'] = 'f',
---     ['method-name'] = 'm',
---   }
--- }
+require 'nvim-gps'.setup {
+  -- icons = {
+  --   ['class-name'] = 'C ',
+  --   ['function-name'] = 'f ',
+  --   ['method-name'] = 'm ',
+  --   ['container-name'] = 'n ',
+  --   ['tag-name'] = 't ',
+  -- }
+}

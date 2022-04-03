@@ -39,10 +39,6 @@ map_modes(nav_modes, '<a-h>', '<c-space><cmd>tabp<cr>', remap)
 map_modes({'n', 'v'}, '}', '15j')
 map_modes({'n', 'v'}, '{', '15k')
 
--- confirm so that compe can do snippets and stuff
-map_modes({'i'}, '<cr>', 'compe#confirm(\'<cr>\')', {expr = true})
-map_modes({'i'}, '<c-t>', 'compe#complete()', {expr = true})
-
 -- quickly switch back to previous buffer
 nmap('<leader><space>', '<cmd>b#<cr>')
 -- easier way to clear search highlighting

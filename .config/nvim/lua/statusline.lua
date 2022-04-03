@@ -1,8 +1,20 @@
+local gps = require 'nvim-gps'
 local diagnostics = {
   'diagnostics',
   sources = {'nvim_lsp'},
   color_error = '#e06c75',
   color_warn = '#e5c07b'
+}
+
+local location = {
+  function()
+    local text_path = gps.get_location()
+    if #text_path > 0
+    then
+      return '> ' .. text_path
+    end
+    return ''
+  end, cond = gps.is_available
 }
 
 local diff = {
@@ -34,7 +46,7 @@ local lualine = require 'lualine'.setup {
   sections = {
     lualine_a = {'mode'},
     lualine_b = {diff, 'branch'},
-    lualine_c = {diagnostics, 'filename'},
+    lualine_c = {diagnostics, 'filename', location},
     lualine_x = {'encoding', 'fileformat', filetype_or_lsp},
     lualine_y = {'progress'},
     lualine_z = {'location'},

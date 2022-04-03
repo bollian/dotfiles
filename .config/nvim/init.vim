@@ -31,6 +31,11 @@ au TextYankPost * lua vim.highlight.on_yank {on_visual = false, timeout = 200}
 autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
 \ lua require'lsp_extensions'.inlay_hints{prefix = '', highlight = 'NonText'}
 
+" Disable autocompletion in telescope window
+autocmd FileType TelescopePrompt lua require'cmp'.setup.buffer {
+\   completion = { autocomplete = false }
+\ }
+
 " Enable and select color schemes
 let g:onedark_terminal_italics = 1
 syntax on
@@ -119,14 +124,6 @@ let g:echodoc#enable_at_startup = 1
 nnoremap / /\v
 " search for highlighted text when entering search from visual mode
 vnoremap / y/\V<c-r>=escape(@",'/\')<cr><cr>
-
-" Trigger completion with <Tab>
-inoremap <silent><expr> <tab>
-  \ pumvisible() ? "\<c-n>" :
-  \ <sid>check_back_space() ? "\<tab>" :
-  \ compe#complete()
-inoremap <silent><expr> <s-tab>
-  \ pumvisible() ? "\<c-p>" : "\<s-tab>"
 
 function! s:check_back_space() abort
     let col = col('.') - 1
