@@ -1,7 +1,3 @@
-local o = vim.o
-local wo = vim.wo
-local bo = vim.bo
-
 local function merge_into(target, extras)
   for key, value in pairs(extras) do
     target[key] = value
@@ -47,9 +43,6 @@ merge_into(vim.opt, {
   signcolumn = 'yes', -- Prevent the window from resizing due to the gitgutter being added
   showmode = false, -- hide the mode in the command line row (already shown by lualine)
   undofile = true, -- persist undo history between sessions
-  -- shell = 'nu', -- use a specific default shell (this breaks fugitive)
-
-  -- exrc = true,
 })
 
 require'nvim-lightbulb'.update_lightbulb {
@@ -85,7 +78,9 @@ cmp.setup {
   max_abbr_width = 100,
   max_kind_width = 100,
   max_menu_width = 100,
-  documentation = true,
+  window = {
+    documentation = "native"
+  },
 
   sources = cmp.config.sources({
     { name = 'path' },

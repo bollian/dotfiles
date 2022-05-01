@@ -41,7 +41,8 @@ local lualine = require 'lualine'.setup {
     theme = 'gruvbox-flat',
     section_separators = {},
     component_separators = {},
-    icons_enabled = false
+    icons_enabled = false,
+    globalstatus = true
   },
   sections = {
     lualine_a = {'mode'},
