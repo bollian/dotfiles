@@ -28,8 +28,8 @@ au BufNewFile,BufRead *.v set filetype=verilog
 au TextYankPost * lua vim.highlight.on_yank {on_visual = false, timeout = 200}
 
 " Enable type inlay hints
-autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
-\ lua require'lsp_extensions'.inlay_hints{prefix = '', highlight = 'NonText'}
+autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs
+\ lua require'lsp_extensions'.inlay_hints()
 
 " Disable autocompletion in telescope window
 autocmd FileType TelescopePrompt lua require'cmp'.setup.buffer {
@@ -114,9 +114,6 @@ augroup fern-custom
     autocmd! *
     autocmd FileType fern call s:init_fern()
 augroup END
-
-" show function signatures in the command line
-let g:echodoc#enable_at_startup = 1
 "}}}
 
 "{{{ Mappings

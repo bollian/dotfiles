@@ -37,7 +37,6 @@ return require('packer').startup(function(use)
     use 'tpope/vim-repeat'
     use 'nvim-treesitter/nvim-treesitter-textobjects'
     use 'windwp/nvim-autopairs'
-    use 'ludovicchabant/vim-gutentags'
 
     -- LSP support
     use 'neovim/nvim-lspconfig'
