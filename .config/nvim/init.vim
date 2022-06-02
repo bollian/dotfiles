@@ -9,13 +9,6 @@ lua require 'statusline'
 lua require 'dap-config'
 
 "{{{ General Options
-" Tab configuration
-set tabstop=4 softtabstop=-1 expandtab shiftwidth=4 smarttab
-
-set completeopt=noinsert,menuone,noselect
-set shortmess+=c " avoid extra messages during completion
-set pumheight=20 " display 20 items at most
-
 " filetype detection for glsl
 au BufRead,BufNewFile *.glslv setfiletype glsl
 au BufRead,BufNewFile *.glslf setfiletype glsl

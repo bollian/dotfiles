@@ -4,7 +4,6 @@ local function merge_into(target, extras)
   end
 end
 
--- vim.g.floaterm_shell = 'nu'
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -43,6 +42,17 @@ merge_into(vim.opt, {
   signcolumn = 'yes', -- Prevent the window from resizing due to the gitgutter being added
   showmode = false, -- hide the mode in the command line row (already shown by lualine)
   undofile = true, -- persist undo history between sessions
+
+  completeopt = { 'noinsert', 'menuone', 'noselect' },
+  shortmess = vim.opt.shortmess + 'c', -- avoid extra messages during completion
+  pumheight = 20, -- display 20 items at most
+
+  -- tab configuration
+  tabstop = 4, -- # of spaces a tab is displayed as
+  softtabstop = -1, -- insert spaces instead of tabs
+  shiftwidth = 4, -- # of spaces when pressing tab and indenting
+  expandtab = true, -- insert spaces instead of tabs
+  smarttab = true, -- delete or insert spaces according to shiftwidth
 })
 
 require'nvim-lightbulb'.update_lightbulb {
