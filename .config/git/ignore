@@ -6,3 +6,12 @@ Session.vim
 
 # defx file containing the tree expansion state
 .defx-session
+
+# project-specific clangd settings
+.clangd
+
+# ctags database
+tags
+
+# clangd configuration
+compile_commands.json
