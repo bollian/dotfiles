@@ -115,16 +115,8 @@ cmp.setup.cmdline('/', {
 
 require 'Comment'.setup {}
 
-require'nvim-autopairs'.setup()
+require'nvim-autopairs'.setup {}
 
-require'neoclip'.setup{}
+require'neoclip'.setup {}
 
-require 'nvim-gps'.setup {
-  -- icons = {
-  --   ['class-name'] = 'C ',
-  --   ['function-name'] = 'f ',
-  --   ['method-name'] = 'm ',
-  --   ['container-name'] = 'n ',
-  --   ['tag-name'] = 't ',
-  -- }
-}
+require 'nvim-gps'.setup {}

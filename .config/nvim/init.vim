@@ -114,8 +114,3 @@ augroup END
 nnoremap / /\v
 " search for highlighted text when entering search from visual mode
 vnoremap / y/\V<c-r>=escape(@",'/\')<cr><cr>
-
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-endfunction

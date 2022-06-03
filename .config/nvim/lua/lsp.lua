@@ -11,32 +11,34 @@ capabilities.textDocument.completion.completionItem.snippetSupport = false
 
 local on_attach = function(client, bufnr)
   require 'lsp_signature'.on_attach()
-    local opts = { noremap=true, silent=true }
-    -- there are several goto def/impl/decl actions. this first one is my favorite
-    buf_set_keymap(bufnr, 'n', 'gd',             '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
-    -- the traditional mapping
-    -- buf_set_keymap(bufnr, 'n', '<c-]>',          '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
+  -- require 'cmp_nvim_lsp'.update_cababilities(vim.lsp.protocol.make_client_capabilities)
 
-    buf_set_keymap(bufnr, 'n', 'K',              '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
-    buf_set_keymap(bufnr, 'n', 'gD',             '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
-    -- buf_set_keymap(bufnr, 'n', '<c-k>',          '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
-    buf_set_keymap(bufnr, 'n', '1gD',            '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
-    buf_set_keymap(bufnr, 'n', 'gr',             '<cmd>lua require\'telescope.builtin\'.lsp_references()<cr>', opts)
-    buf_set_keymap(bufnr, 'n', 'g0',             '<cmd>lua require\'telescope.builtin\'.lsp_document_symbols()<cr>', opts)
-    buf_set_keymap(bufnr, 'n', 'gw',             '<cmd>lua require\'telescope.builtin\'.lsp_workspace_symbols()<cr>', opts)
-    -- buf_set_keymap(bufnr, 'n', 'gr',             '<cmd>lua vim.lsp.buf.references()<cr>', opts)
-    -- buf_set_keymap(bufnr, 'n', 'g0',             '<cmd>lua vim.lsp.buf.document_symbol()<cr>', opts)
-    -- buf_set_keymap(bufnr, 'n', 'gW',             '<cmd>lua vim.lsp.buf.workspace_symbol()<cr>', opts)
-    buf_set_keymap(bufnr, 'n', '<localleader>r', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
-    buf_set_keymap(bufnr, 'n', '<localleader>d', '<cmd>lua vim.diagnostic.show_line_diagnostics()<cr>', opts)
-    buf_set_keymap(bufnr, 'n', '<localleader>a', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
+  local opts = { noremap=true, silent=true }
+  -- there are several goto def/impl/decl actions. this first one is my favorite
+  buf_set_keymap(bufnr, 'n', 'gd',             '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
+  -- the traditional mapping
+  -- buf_set_keymap(bufnr, 'n', '<c-]>',          '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
 
-    -- configuration for diagnostics
-    buf_set_keymap(bufnr, 'n', 'g[', '<cmd>lua vim.diagnostic.goto_prev()<cr>', opts)
-    buf_set_keymap(bufnr, 'n', 'g]', '<cmd>lua vim.diagnostic.goto_next()<cr>', opts)
+  buf_set_keymap(bufnr, 'n', 'K',              '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
+  buf_set_keymap(bufnr, 'n', 'gD',             '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
+  -- buf_set_keymap(bufnr, 'n', '<c-k>',          '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
+  buf_set_keymap(bufnr, 'n', '1gD',            '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
+  buf_set_keymap(bufnr, 'n', 'gr',             '<cmd>lua require\'telescope.builtin\'.lsp_references()<cr>', opts)
+  buf_set_keymap(bufnr, 'n', 'g0',             '<cmd>lua require\'telescope.builtin\'.lsp_document_symbols()<cr>', opts)
+  buf_set_keymap(bufnr, 'n', 'gw',             '<cmd>lua require\'telescope.builtin\'.lsp_workspace_symbols()<cr>', opts)
+  -- buf_set_keymap(bufnr, 'n', 'gr',             '<cmd>lua vim.lsp.buf.references()<cr>', opts)
+  -- buf_set_keymap(bufnr, 'n', 'g0',             '<cmd>lua vim.lsp.buf.document_symbol()<cr>', opts)
+  -- buf_set_keymap(bufnr, 'n', 'gW',             '<cmd>lua vim.lsp.buf.workspace_symbol()<cr>', opts)
+  buf_set_keymap(bufnr, 'n', '<localleader>r', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
+  buf_set_keymap(bufnr, 'n', '<localleader>d', '<cmd>lua vim.diagnostic.show_line_diagnostics()<cr>', opts)
+  buf_set_keymap(bufnr, 'n', '<localleader>a', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
 
-    -- TODO: add a mapping for goto implementation
-    -- buf_set_keymap(bufnr, 'n', 'gd',          '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
+  -- configuration for diagnostics
+  buf_set_keymap(bufnr, 'n', 'g[', '<cmd>lua vim.diagnostic.goto_prev()<cr>', opts)
+  buf_set_keymap(bufnr, 'n', 'g]', '<cmd>lua vim.diagnostic.goto_next()<cr>', opts)
+
+  -- TODO: add a mapping for goto implementation
+  -- buf_set_keymap(bufnr, 'n', 'gd',          '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
 end
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
