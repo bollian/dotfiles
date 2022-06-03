@@ -55,6 +55,8 @@ merge_into(vim.opt, {
   smarttab = true, -- delete or insert spaces according to shiftwidth
 })
 
+require'telescope'.setup {}
+
 require'nvim-lightbulb'.update_lightbulb {
   sign = {
     enabled = true,

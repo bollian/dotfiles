@@ -22,7 +22,6 @@ return require('packer').startup(function(use)
   use 'romgrk/barbar.nvim'
   use 'lambdalisue/fern.vim'
   use 'voldikss/vim-floaterm'
-  use 'mfussenegger/nvim-dap'
   use 'AckslD/nvim-neoclip.lua'
   use 'SmiteshP/nvim-gps'
 
@@ -43,7 +42,6 @@ return require('packer').startup(function(use)
   use 'neovim/nvim-lspconfig'
   use 'nvim-lua/lsp_extensions.nvim'
   use 'kosayoda/nvim-lightbulb'
-  -- use 'hrsh7th/nvim-compe'
   use {
     'hrsh7th/nvim-cmp',
     requires = {
@@ -54,6 +52,9 @@ return require('packer').startup(function(use)
     }
   }
   use 'ray-x/lsp_signature.nvim'
+  use 'mfussenegger/nvim-dap'
+  use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } }
+  use 'sakhnik/nvim-gdb'
 
   -- Language-specific plugins
   use 'arm9/arm-syntax-vim'
@@ -62,7 +63,6 @@ return require('packer').startup(function(use)
   -- Aesthetic plugins
   use 'eddyekofo94/gruvbox-flat.nvim'
   use 'sheerun/vim-polyglot'
-  -- use { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = ':TSUpdate' }
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/playground'
 end)

@@ -20,10 +20,6 @@ au BufNewFile,BufRead *.v set filetype=verilog
 " highlight yanked text
 au TextYankPost * lua vim.highlight.on_yank {on_visual = false, timeout = 200}
 
-" Enable type inlay hints
-autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs
-\ lua require'lsp_extensions'.inlay_hints()
-
 " Disable autocompletion in telescope window
 autocmd FileType TelescopePrompt lua require'cmp'.setup.buffer {
 \   completion = { autocomplete = false }
