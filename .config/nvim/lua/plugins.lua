@@ -11,8 +11,6 @@ end
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
   -- UI Elements
-  use { 'junegunn/fzf', run = function() vim.cmd[[fzf#install()]] end }
-  use 'junegunn/fzf.vim'
   use {
     'nvim-telescope/telescope.nvim',
     requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'}

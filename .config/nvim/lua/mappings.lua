@@ -1,21 +1,30 @@
 local o = vim.o
 local wo = vim.wo
 local bo = vim.bo
+local telescopes = require 'telescope.builtin'
 
 local function map_modes(modes, shortcut, action, options)
-    local default_options = {
-        silent = true,
-        noremap = true
-    }
-    options = options or {}
-    options = vim.tbl_extend('force', default_options, options)
-    for _, mode in ipairs(modes) do
-        vim.api.nvim_set_keymap(mode, shortcut, action, options)
-    end
+  local default_options = {
+    silent = true,
+    noremap = true
+  }
+  options = options or {}
+  options = vim.tbl_extend('force', default_options, options)
+
+  vim_action = ''
+  if type(action) == 'string' then
+    vim_action = action
+  elseif type(action) == 'function' then
+    options.callback = action
+  end
+
+  for _, mode in ipairs(modes) do
+    vim.api.nvim_set_keymap(mode, shortcut, vim_action, options)
+  end
 end
 
 local function nmap(shortcut, action, options)
-    map_modes({'n'}, shortcut, action, options)
+  map_modes({'n'}, shortcut, action, options)
 end
 
 -- more accessible shortcut for escape
@@ -50,15 +59,16 @@ nmap('<leader>t', '<cmd>Fern . -reveal=%<cr>')
 -- Quickly splitting windows
 nmap('<leader>v', '<C-w>v')
 -- Searching with fzf
-nmap('<leader>f', '<cmd>Files<cr>')
--- nmap('<leader>f', '<cmd>lua require\'telescope.builtin\'.find_files{}<cr>')
-nmap('<leader>b', '<cmd>Buffers<cr>')
-nmap('<leader>g', '<cmd>Rg<cr>')
-nmap('<leader>c', '<cmd>Commands<cr>')
-nmap('<leader>h', '<cmd>Helptags<cr>')
-nmap('<leader>m', '<cmd>Marks<cr>')
-nmap('<leader>j', '<cmd>lua require\'telescope.builtin\'.lsp_document_symbols{}<cr>')
-nmap('<leader>J', '<cmd>lua require\'telescope.builtin\'.lsp_workspace_symbols{}<cr>')
+nmap('<leader>f', function() telescopes.find_files { hidden = true } end)
+nmap('<leader>b', telescopes.buffers)
+nmap('<leader>G', telescopes.live_grep)
+nmap('<leader>g', telescopes.current_buffer_fuzzy_find)
+nmap('<leader>c', telescopes.commands)
+nmap('<leader>h', telescopes.help_tags)
+nmap('<leader>m', telescopes.marks)
+nmap('<leader>j', function () telescopes.treesitter({default_text = ':function: '}) end)
+-- nmap('<leader>j', '<cmd>lua require\'telescope.builtin\'.lsp_document_symbols()<cr>')
+nmap('<leader>J', '<cmd>lua require\'telescope.builtin\'.lsp_workspace_symbols()<cr>')
 nmap('<leader>y', '<cmd>Telescope neoclip<cr>')
 -- Session management
 nmap('<leader>ss', '<cmd>Obsess<cr>')
