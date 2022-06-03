@@ -29,9 +29,10 @@ return require('packer').startup(function(use)
     -- Git
     use 'tpope/vim-fugitive'
     use 'rbong/vim-flog'
+  use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
 
     -- Editing functionality
-    use 'b3nj5m1n/kommentary'
+    use 'numToStr/Comment.nvim'
     use 'tpope/vim-obsession'
     use 'tpope/vim-surround'
     use 'tpope/vim-repeat'
@@ -44,15 +45,17 @@ return require('packer').startup(function(use)
     use 'kosayoda/nvim-lightbulb'
     -- use 'hrsh7th/nvim-compe'
     use {
-      'hrsh7th/nvim-cmp',
-      requires = {
-        'quangnguyen30192/cmp-nvim-tags'
-      }
+        'hrsh7th/nvim-cmp',
+        requires = {
+            'quangnguyen30192/cmp-nvim-tags',
+            'hrsh7th/cmp-nvim-lsp',
+            'hrsh7th/cmp-path',
+            'hrsh7th/cmp-cmdline',
+        }
     }
     use 'ray-x/lsp_signature.nvim'
 
     -- Language-specific plugins
-    use 'simrat39/rust-tools.nvim'
     use 'arm9/arm-syntax-vim'
     use 'lervag/vimtex'
 

@@ -5,16 +5,9 @@ local g = vim.g      -- a table to access global variables
 local lspconfig = require('lspconfig')
 local buf_set_keymap = vim.api.nvim_buf_set_keymap
 
+local capabilities = require 'cmp_nvim_lsp'.update_capabilities(vim.lsp.protocol.make_client_capabilities())
 -- disable snippets by default
-local capabilities = {
-    textDocument = {
-        completion = {
-            completionItem = {
-                snippetSupport = false
-            }
-        }
-    }
-}
+capabilities.textDocument.completion.completionItem.snippetSupport = false
 
 local on_attach = function(client, bufnr)
   require 'lsp_signature'.on_attach()
@@ -54,16 +47,8 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   }
 )
 
-require('rust-tools').setup({
-    server = {
-        capabilities = capabilities,
-        on_attach = on_attach
-    }
-})
-
 local servers = {
-  -- rust is initialized by rust-tools
-  -- ["rust_analyzer"] = {},
+  ["rust_analyzer"] = {},
   ["pyright"] = {},
   -- currently using gutentags
   ["clangd"] = {},

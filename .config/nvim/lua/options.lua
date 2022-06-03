@@ -77,56 +77,43 @@ require'nvim-lightbulb'.update_lightbulb {
 
 local cmp = require 'cmp'
 cmp.setup {
-  enabled = true,
-  autocomplete = true,
-  debug = false,
-  min_length = 1,
-  preselect = 'disable',
-  throttle_time = 80,
-  source_timeout = 200,
-  incomplete_delay = 400,
-  max_abbr_width = 100,
-  max_kind_width = 100,
-  max_menu_width = 100,
-  window = {
-    documentation = "native"
-  },
-
   sources = cmp.config.sources({
-    { name = 'path' },
-    { name = 'buffer' },
-    { name = 'calc' },
+    -- highest priority sources
     { name = 'nvim_lsp' },
-    { name = 'nvim_lua' },
-    { name = 'vsnip' }
   }, {
-    { name = 'tags' }
+    -- next priority sources. not shown if higher priority is available
+    { name = 'buffer' },
   }),
-
-  source = {
-    path = true,
-    buffer = true,
-    calc = true,
-    nvim_lsp = true,
-    nvim_lua = true,
-    vsnip = true,
+  view = {
+    entries = 'native',
   },
-
+  preselect = cmp.PreselectMode.None,
   mapping = {
     ['<Tab>'] = function(fallback)
-      local cmp = require 'cmp'
       if cmp.visible() then
         cmp.select_next_item()
       else
         fallback()
       end
-    end
-  }
+    end,
+    ['<S-Tab>'] = function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      else
+        fallback()
+      end
+    end,
+  },
 }
 
-require'kommentary.config'.configure_language('default', {
-  prefer_single_line_comments = true,
+-- enable buffer source for / search
+cmp.setup.cmdline('/', {
+  sources = cmp.config.sources({
+    { name = 'buffer' },
+  })
 })
+
+require 'Comment'.setup {}
 
 require'nvim-autopairs'.setup()
 
