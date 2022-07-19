@@ -22,6 +22,8 @@ return require('packer').startup(function(use)
   use 'voldikss/vim-floaterm'
   use 'AckslD/nvim-neoclip.lua'
   use 'SmiteshP/nvim-gps'
+  use 'lotabout/skim'
+  use 'lotabout/skim.vim'
 
   -- Git
   use 'tpope/vim-fugitive'
@@ -30,11 +32,13 @@ return require('packer').startup(function(use)
 
   -- Editing functionality
   use 'numToStr/Comment.nvim'
-  use 'tpope/vim-obsession'
   use 'tpope/vim-surround'
   use 'tpope/vim-repeat'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use 'windwp/nvim-autopairs'
+
+  -- Extra editor functionality
+  use 'rmagatti/auto-session'
 
   -- LSP support
   use 'neovim/nvim-lspconfig'

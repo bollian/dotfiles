@@ -122,3 +122,5 @@ require'nvim-autopairs'.setup {}
 require'neoclip'.setup {}
 
 require 'nvim-gps'.setup {}
+
+require 'auto-session'.setup {}

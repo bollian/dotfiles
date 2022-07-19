@@ -59,7 +59,8 @@ nmap('<leader>t', '<cmd>Fern . -reveal=%<cr>')
 -- Quickly splitting windows
 nmap('<leader>v', '<C-w>v')
 -- Searching with fzf
-nmap('<leader>f', function() telescopes.find_files { hidden = true } end)
+nmap('<leader>f', '<cmd>Files<cr>')
+-- nmap('<leader>f', function() telescopes.find_files { hidden = true } end)
 nmap('<leader>b', telescopes.buffers)
 nmap('<leader>G', telescopes.live_grep)
 nmap('<leader>g', telescopes.current_buffer_fuzzy_find)
