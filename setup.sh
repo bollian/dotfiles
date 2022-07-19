@@ -33,6 +33,7 @@ slnr .config/git  .config/git
 slnr .config/nvim .config/nvim
 slnr .hgrc        .hgrc
 slnr .ssh/config  .ssh/config
+slnr .config/pijul/config.toml .config/pijul/config.toml
 
 # reload so that systemd picks up any new services
 systemctl --user daemon-reload
