@@ -29,7 +29,7 @@ local on_attach = function(client, bufnr)
   -- buf_set_keymap(bufnr, 'n', 'g0',             '<cmd>lua vim.lsp.buf.document_symbol()<cr>', opts)
   -- buf_set_keymap(bufnr, 'n', 'gW',             '<cmd>lua vim.lsp.buf.workspace_symbol()<cr>', opts)
   buf_set_keymap(bufnr, 'n', '<localleader>r', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
-  buf_set_keymap(bufnr, 'n', '<localleader>d', '<cmd>lua vim.diagnostic.show_line_diagnostics()<cr>', opts)
+  -- buf_set_keymap(bufnr, 'n', '<localleader>d', '<cmd>lua vim.diagnostic.show_line_diagnostics()<cr>', opts)
   buf_set_keymap(bufnr, 'n', '<localleader>a', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
 
   -- configuration for diagnostics
@@ -58,6 +58,24 @@ local servers = {
   ["bashls"] = {},
   ["html"] = {},
   ["cssls"] = {},
+  ["sumneko_lsp"] = {
+    settings = {
+      Lua = {
+        runtime = {
+          version = 'LuaJIT', -- nvim uses luajit
+        },
+        diagnostics = {
+          globals = {'vim'}, -- recognize the vim global for nvim plugins
+        },
+        workspace = {
+          library = vim.api.nvim_get_runtime_file("", true), -- nvim runtime files
+        },
+        telemetry = {
+          enable = false,
+        },
+      },
+    },
+  },
   -- ["julials"] = {}
 }
 for lsp, server_tweaks in pairs(servers) do

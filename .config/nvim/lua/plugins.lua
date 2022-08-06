@@ -17,13 +17,19 @@ return require('packer').startup(function(use)
   }
   use 'airblade/vim-gitgutter'
   use 'hoob3rt/lualine.nvim'
-  use 'romgrk/barbar.nvim'
-  use 'lambdalisue/fern.vim'
+  use { 'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v2.x',
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+    },
+  }
   use 'voldikss/vim-floaterm'
   use 'AckslD/nvim-neoclip.lua'
-  use 'SmiteshP/nvim-gps'
   use 'lotabout/skim'
   use 'lotabout/skim.vim'
+  use 'nvim-treesitter/nvim-treesitter-context'
+  use 'moll/vim-bbye'
 
   -- Git
   use 'tpope/vim-fugitive'
@@ -39,6 +45,8 @@ return require('packer').startup(function(use)
 
   -- Extra editor functionality
   use 'rmagatti/auto-session'
+  use 'ojroques/nvim-osc52'
+  use 'anuvyklack/hydra.nvim'
 
   -- LSP support
   use 'neovim/nvim-lspconfig'
@@ -54,9 +62,11 @@ return require('packer').startup(function(use)
     }
   }
   use 'ray-x/lsp_signature.nvim'
+
+  -- Debugging support
   use 'mfussenegger/nvim-dap'
   use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } }
-  use 'sakhnik/nvim-gdb'
+  use 'mfussenegger/nvim-dap-python'
 
   -- Language-specific plugins
   use 'arm9/arm-syntax-vim'
@@ -64,7 +74,7 @@ return require('packer').startup(function(use)
 
   -- Aesthetic plugins
   use 'eddyekofo94/gruvbox-flat.nvim'
-  use 'sheerun/vim-polyglot'
+  -- use 'sheerun/vim-polyglot'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/playground'
 end)

@@ -121,6 +121,77 @@ require'nvim-autopairs'.setup {}
 
 require'neoclip'.setup {}
 
-require 'nvim-gps'.setup {}
+require 'auto-session'.setup {
+  -- the dap ui doesn't save well, so just close it
+  pre_save_cmds = { require 'dap-config'.close_dap }
+}
 
-require 'auto-session'.setup {}
+require 'treesitter-context'.setup {
+  mode = 'topline',
+  patterns = {
+    default = {
+      'class',
+      'function',
+      'method'
+    }
+  }
+}
+
+require 'neo-tree'.setup {
+  -- enable_diagnostics = false,
+  default_component_configs = {
+    icon = {
+      folder_closed = '+',
+      folder_open = '-',
+      folder_empty = '>',
+      default = '',
+    },
+    git_status = {
+      symbols = {
+        renamed = 'R',
+        untracked = '?',
+        ignored = 'I',
+        unstaged = 'M',
+        staged = 'S',
+        conflict = 'C'
+      }
+    }
+  },
+  window = {
+    position = 'current',
+  },
+  filesystem = {
+    filtered_items = {
+      visible = true,
+    },
+  },
+  event_handlers = {
+    {
+      event = 'neo_tree_buffer_enter',
+      handler = function()
+        merge_into(vim.opt, {
+          number = true,
+          relativenumber = true,
+        })
+      end,
+      id = 'window_settings',
+    }
+  }
+}
+
+-- use nvim-osc52 as a clipboard provider
+local function copy(lines, _)
+  require('osc52').copy(table.concat(lines, '\n'))
+end
+
+local function paste()
+  return {vim.fn.split(vim.fn.getreg(''), '\n'), vim.fn.getregtype('')}
+end
+
+vim.g.clipboard = {
+  name = 'osc52',
+  copy = {['+'] = copy, ['*'] = copy},
+  paste = {['+'] = paste, ['*'] = paste},
+}
+
+require 'dapui'.setup()

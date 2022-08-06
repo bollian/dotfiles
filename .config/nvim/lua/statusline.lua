@@ -1,20 +1,10 @@
-local gps = require 'nvim-gps'
+local hydra = require 'hydra.statusline'
+
 local diagnostics = {
   'diagnostics',
   sources = {'nvim_lsp'},
   color_error = '#e06c75',
   color_warn = '#e5c07b'
-}
-
-local location = {
-  function()
-    local text_path = gps.get_location()
-    if #text_path > 0
-    then
-      return '> ' .. text_path
-    end
-    return ''
-  end, cond = gps.is_available
 }
 
 local diff = {
@@ -23,7 +13,28 @@ local diff = {
   color_removed = '#e06c65'
 }
 
-function filetype_or_lsp()
+local vim_mode = {
+  'mode',
+  cond = function() return not hydra.is_active() end
+}
+local hydra_mode = {
+  hydra.get_name,
+  cond = function() return hydra.is_active() end,
+  color = function()
+    return { fg = 'black', bg = hydra.get_color() }
+  end
+}
+
+local function mode()
+  hydra = require 'hydra.statusline'
+  if hydra.is_active() then
+
+  else
+    return { 'mode' }
+  end
+end
+
+local function filetype_or_lsp()
   local servers = vim.lsp.buf_get_clients()
   for _, server in ipairs(servers) do
     local ok, server_name = pcall(function()
@@ -45,9 +56,9 @@ local lualine = require 'lualine'.setup {
     globalstatus = true
   },
   sections = {
-    lualine_a = {'mode'},
+    lualine_a = {vim_mode, hydra_mode},
     lualine_b = {diff, 'branch'},
-    lualine_c = {diagnostics, 'filename', location},
+    lualine_c = {diagnostics, 'filename'},
     lualine_x = {'encoding', 'fileformat', filetype_or_lsp},
     lualine_y = {'progress'},
     lualine_z = {'location'},

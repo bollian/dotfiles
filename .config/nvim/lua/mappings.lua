@@ -34,7 +34,7 @@ map_modes({'t'}, '<c-space>', '<c-\\><c-n>')
 
 -- easier window navigation
 local nav_modes = {'i', 'v', 'n', 's', 't'}
-local remap = {noremap = false}
+local remap = { noremap = false }
 map_modes(nav_modes, '<c-l>', '<c-space><c-w>l', remap)
 map_modes(nav_modes, '<c-h>', '<c-space><c-w>h', remap)
 map_modes(nav_modes, '<c-j>', '<c-space><c-w>j', remap)
@@ -53,11 +53,11 @@ nmap('<leader><space>', '<cmd>b#<cr>')
 -- easier way to clear search highlighting
 nmap('<leader>n', '<cmd>noh<cr>')
 -- delete a buffer without deleting the window
-nmap('<leader>q', '<cmd>BufferClose<cr>')
+nmap('<leader>q', '<cmd>Bdelete<cr>')
 -- Open the file explorer in the current window
-nmap('<leader>t', '<cmd>Fern . -reveal=%<cr>')
+nmap('<leader>t', '<cmd>Neotree reveal<cr>')
 -- Quickly splitting windows
-nmap('<leader>v', '<C-w>v')
+nmap('<leader>v', '<c-w>v')
 -- Searching with fzf
 nmap('<leader>f', '<cmd>Files<cr>')
 -- nmap('<leader>f', function() telescopes.find_files { hidden = true } end)
@@ -67,7 +67,18 @@ nmap('<leader>g', telescopes.current_buffer_fuzzy_find)
 nmap('<leader>c', telescopes.commands)
 nmap('<leader>h', telescopes.help_tags)
 nmap('<leader>m', telescopes.marks)
-nmap('<leader>j', function () telescopes.treesitter({default_text = ':function: '}) end)
+nmap('<leader>l', telescopes.jumplist)
+nmap('<leader>j', function ()
+  local ft_specializations = {
+    markdown = telescopes.treesitter,
+    html = telescopes.treesitter,
+    tex = telescopes.treesitter,
+  }
+
+  local default = function () telescopes.treesitter { default_text = ':function: ' } end
+  local handler = ft_specializations[vim.bo.filetype] or default
+  handler()
+end)
 -- nmap('<leader>j', '<cmd>lua require\'telescope.builtin\'.lsp_document_symbols()<cr>')
 nmap('<leader>J', '<cmd>lua require\'telescope.builtin\'.lsp_workspace_symbols()<cr>')
 nmap('<leader>y', '<cmd>Telescope neoclip<cr>')
