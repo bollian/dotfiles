@@ -15,3 +15,6 @@ tags
 
 # clangd configuration
 compile_commands.json
+
+# pyright configuration
+pyrightconfig.json
