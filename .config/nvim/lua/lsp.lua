@@ -4,12 +4,12 @@ local g = vim.g      -- a table to access global variables
 local lspconfig = require('lspconfig')
 local buf_set_keymap = vim.api.nvim_buf_set_keymap
 
-local capabilities = require 'cmp_nvim_lsp'.update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- disable snippets by default
 capabilities.textDocument.completion.completionItem.snippetSupport = false
 
-local on_attach = function(client, bufnr)
-  require 'lsp_signature'.on_attach()
+local function on_attach(client, bufnr)
+  require('lsp_signature').on_attach()
   -- require 'cmp_nvim_lsp'.update_cababilities(vim.lsp.protocol.make_client_capabilities)
 
   local opts = { noremap=true, silent=true }
@@ -58,7 +58,7 @@ local servers = {
   ["bashls"] = {},
   ["html"] = {},
   ["cssls"] = {},
-  ["sumneko_lsp"] = {
+  ["sumneko_lua"] = {
     settings = {
       Lua = {
         runtime = {

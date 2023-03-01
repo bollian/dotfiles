@@ -77,6 +77,14 @@ local function debug_fixture()
   end
 end
 
+local function debug_selection()
+  if vim.bo.filetype == 'python' then
+    dap_python.debug_selection()
+  else
+    print(vim.bo.filetype .. ' has no "debug test fixture" keymap set')
+  end
+end
+
 local function test_selection()
   if vim.bo.filetype == 'python' then
     dap_python.test_selection()

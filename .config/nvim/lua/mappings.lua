@@ -1,6 +1,4 @@
-local o = vim.o
-local wo = vim.wo
-local bo = vim.bo
+require 'telescope'
 local telescopes = require 'telescope.builtin'
 
 local function map_modes(modes, shortcut, action, options)
@@ -11,7 +9,7 @@ local function map_modes(modes, shortcut, action, options)
   options = options or {}
   options = vim.tbl_extend('force', default_options, options)
 
-  vim_action = ''
+  local vim_action = ''
   if type(action) == 'string' then
     vim_action = action
   elseif type(action) == 'function' then
@@ -31,6 +29,11 @@ end
 -- also more consistent when using the terminal
 map_modes({'i', 'v', 'n', 's'}, '<c-space>', '<esc>')
 map_modes({'t'}, '<c-space>', '<c-\\><c-n>')
+
+-- use normal regex when searching in normal/visual mode
+nmap('/', [[/\v]], { silent = false })
+-- search for highlighted text when entering search from visual mode
+map_modes({ 'v' }, '/', [[y/\V<c-r>=escape(@",'/\')<cr><cr>]], { silent = false })
 
 -- easier window navigation
 local nav_modes = {'i', 'v', 'n', 's', 't'}
@@ -72,7 +75,7 @@ nmap('<leader>j', function ()
   local ft_specializations = {
     markdown = telescopes.treesitter,
     html = telescopes.treesitter,
-    tex = telescopes.treesitter,
+    tex = telescopes.lsp_document_symbols,
   }
 
   local default = function () telescopes.treesitter { default_text = ':function: ' } end
