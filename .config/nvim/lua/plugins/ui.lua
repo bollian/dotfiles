@@ -1,8 +1,23 @@
 return {
-  {
-    'nvim-telescope/telescope.nvim',
+  { 'nvim-telescope/telescope.nvim',
     dependencies = { 'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim' },
     config = function()
+      require('telescope').setup {
+        defaults = {
+          -- borderchars = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
+          borderchars = {
+            prompt = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
+            results = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
+            preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+          }
+        },
+      }
+
+      vim.api.nvim_create_user_command("History", require('telescope.builtin').command_history, {
+        desc = "Search your command history",
+      })
+
+      -- disable autocompletion in the telescope search field
       vim.api.nvim_create_autocmd('FileType', {
         pattern = 'TelescopePrompt',
         callback = function()
@@ -11,13 +26,9 @@ return {
           }
         end
       })
-
-      require('telescope').setup {}
     end
   },
-  'hoob3rt/lualine.nvim',
-  {
-    'nvim-neo-tree/neo-tree.nvim',
+  { 'nvim-neo-tree/neo-tree.nvim',
     branch = 'v2.x',
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -51,6 +62,34 @@ return {
           filtered_items = {
             visible = true,
           },
+          commands = {
+            grep_from = function(state)
+              local telescopes = require('telescope.builtin')
+              local node = state.tree:get_node()
+              if node then
+                local fpath = node:get_id()
+                telescopes.live_grep {
+                  search_dirs = {fpath}
+                }
+              end
+            end,
+            find_files_from = function(state)
+              local telescopes = require('telescope.builtin')
+              local node = state.tree:get_node()
+              if node then
+                local fpath = node:get_id()
+                telescopes.find_files {
+                  search_dirs = {fpath}
+                }
+              end
+            end
+          },
+          window = {
+            mappings = {
+              ['g'] = 'grep_from',
+              ['f'] = 'find_files_from',
+            },
+          },
         },
         event_handlers = {
           {
@@ -66,14 +105,13 @@ return {
     end,
   },
   'voldikss/vim-floaterm',
-  {
-    'AckslD/nvim-neoclip.lua',
-    config = function() require('neoclip').setup {} end,
+  { 'AckslD/nvim-neoclip.lua',
+    config = function()
+      require('neoclip').setup {}
+      require('telescope').load_extension('neoclip')
+    end,
   },
-  'lotabout/skim',
-  'lotabout/skim.vim',
-  {
-    'nvim-treesitter/nvim-treesitter-context',
+  { 'nvim-treesitter/nvim-treesitter-context',
     config = function()
       require('treesitter-context').setup {
         mode = 'topline',

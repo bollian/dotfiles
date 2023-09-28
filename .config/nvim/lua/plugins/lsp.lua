@@ -1,10 +1,13 @@
 return {
   'neovim/nvim-lspconfig',
   'nvim-lua/lsp_extensions.nvim',
-  {
-    'kosayoda/nvim-lightbulb',
+  { 'kosayoda/nvim-lightbulb',
     config = function()
-      require('nvim-lightbulb').update_lightbulb {
+      local lightbulb = require('nvim-lightbulb')
+      lightbulb.setup {
+        autocmd = {
+          enabled = true,
+        },
         sign = {
           enabled = true,
           -- Priority of the gutter sign
@@ -12,7 +15,7 @@ return {
           text = 'A'
         },
         float = {
-          enabled = true,
+          enabled = false,
           -- Text to show in the popup float
           text = "A",
           win_opts = {},
@@ -23,16 +26,9 @@ return {
           text = "A",
         }
       }
-      vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-        pattern = '*',
-        callback = function()
-          require('nvim-lightbulb').update_lightbulb()
-        end
-      })
     end
   },
-  {
-    'hrsh7th/nvim-cmp',
+  { 'hrsh7th/nvim-cmp',
     dependencies = {
       'quangnguyen30192/cmp-nvim-tags',
       'hrsh7th/cmp-nvim-lsp',
@@ -40,7 +36,7 @@ return {
       'hrsh7th/cmp-cmdline',
     },
     config = function()
-      local cmp = require 'cmp'
+      local cmp = require('cmp')
       cmp.setup {
         sources = cmp.config.sources({
           -- highest priority sources
@@ -50,7 +46,7 @@ return {
           { name = 'buffer' },
         }),
         view = {
-          entries = 'native',
+          entries = 'custom',
         },
         preselect = cmp.PreselectMode.None,
         mapping = {
@@ -72,9 +68,21 @@ return {
       }
 
       -- enable buffer source for / search
-      cmp.setup.cmdline('/', {
+      cmp.setup.cmdline('/\v', {
         sources = cmp.config.sources({
           { name = 'buffer' },
+        })
+      })
+
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = 'path' }
+        }, {
+          {
+            name = 'cmdline',
+            option = { ignore_cmds = { '!' } }
+          }
         })
       })
     end

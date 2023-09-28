@@ -1,6 +1,5 @@
 return {
-  {
-    'airblade/vim-gitgutter',
+  { 'airblade/vim-gitgutter',
     init = function()
       -- display a colored line for git diff
       vim.g.gitgutter_sign_added = '│'

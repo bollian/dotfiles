@@ -63,6 +63,7 @@ pattern_ftype('*.glslv,*.glslf', 'glsl')
 pattern_ftype('*_armv8.s,*_armv8.S', 'arm')
 pattern_ftype('*.v', 'verilog')
 pattern_ftype('*.jl', 'julia')
+pattern_ftype('*.typ', 'typst')
 
 -- highlight yanked text
 vim.api.nvim_create_autocmd('TextYankPost', {
