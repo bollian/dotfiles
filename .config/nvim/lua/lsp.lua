@@ -76,6 +76,11 @@ local servers = {
       },
     },
   },
+  ["typst_lsp"] = {
+    settings = {
+      exportPdf = "never"
+    }
+  }
   -- ["julials"] = {}
 }
 for lsp, server_tweaks in pairs(servers) do

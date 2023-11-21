@@ -13,4 +13,5 @@ return {
   -- Language-specific plugins
   'arm9/arm-syntax-vim',
   'lervag/vimtex',
+  'kaarmu/typst.vim',
 }

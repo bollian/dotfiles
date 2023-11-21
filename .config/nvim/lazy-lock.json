@@ -33,6 +33,7 @@
   "skim": { "branch": "master", "commit": "291fc34c58b1670a5e8c95f1e8f930b82c030b19" },
   "skim.vim": { "branch": "master", "commit": "aa2a5c44a6640843868cc5c1444abc0093e90e5a" },
   "telescope.nvim": { "branch": "master", "commit": "6d3fbffe426794296a77bb0b37b6ae0f4f14f807" },
+  "typst.vim": { "branch": "main", "commit": "97f21818cb8d3d5ed6bb4b672ddb5af975aab71a" },
   "vim-bbye": { "branch": "master", "commit": "25ef93ac5a87526111f43e5110675032dbcacf56" },
   "vim-floaterm": { "branch": "master", "commit": "bd0aee3c861d613f56b85bd9eaffdcab459071fd" },
   "vim-flog": { "branch": "master", "commit": "21dd4d655339560d0f4b876852ef0cc8ff16b7f1" },
