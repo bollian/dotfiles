@@ -6,7 +6,7 @@ end
 
 merge_into(vim.opt, {
   guifont = 'UbuntuMono Nerd Font Mono:h15', -- set the font when using a graphical interface
-  mouse = 'a', -- support mouse selection, clicking, etc
+  mouse = '', -- support mouse selection is more trouble than it's worth right now
   lazyredraw = true, -- only redraw when necessary (makes macros run faster)
 
   -- show whitespace

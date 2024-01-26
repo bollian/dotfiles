@@ -25,6 +25,9 @@ return {
   },
   {
     'ojroques/nvim-osc52',
+    enabled = function()
+      return vim.fn.has('win32') == 1
+    end,
     config = function()
       -- use nvim-osc52 as a clipboard provider
       local function copy(lines, _)
