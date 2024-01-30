@@ -58,35 +58,81 @@ nmap('<leader>n', '<cmd>noh<cr>')
 -- delete a buffer without deleting the window
 nmap('<leader>q', '<cmd>Bdelete<cr>')
 -- Open the file explorer in the current window
-nmap('<leader>t', '<cmd>Neotree reveal<cr>')
+nmap('<leader>t', '<cmd>Neotree reveal toggle<cr>')
 -- Quickly splitting windows
 nmap('<leader>v', '<c-w>v')
+-- Open previous telescope
+nmap('<leader>o', telescopes.resume)
 -- Searching with fzf
-nmap('<leader>f', '<cmd>Files<cr>')
--- nmap('<leader>f', function() telescopes.find_files { hidden = true } end)
+nmap('<leader>f', function() telescopes.find_files { hidden = true } end)
+nmap('<leader>F', telescopes.find_files)
 nmap('<leader>b', telescopes.buffers)
-nmap('<leader>G', telescopes.live_grep)
-nmap('<leader>g', telescopes.current_buffer_fuzzy_find)
+nmap('<leader>gf', telescopes.live_grep)
+nmap('<leader>gg', telescopes.current_buffer_fuzzy_find)
+nmap('<leader>gb', function()
+  telescopes.live_grep {
+    grep_open_files = true,
+  }
+end)
 nmap('<leader>c', telescopes.commands)
-nmap('<leader>h', telescopes.help_tags)
 nmap('<leader>m', telescopes.marks)
 nmap('<leader>l', telescopes.jumplist)
 nmap('<leader>j', function ()
+  local function link_and_ts(opts)
+    local pos = vim.api.nvim_win_get_cursor(0)
+    vim.api.nvim_buf_set_mark(0, "'", pos[1], pos[2], {})
+    telescopes.treesitter(opts)
+  end
+
   local ft_specializations = {
-    markdown = telescopes.treesitter,
-    html = telescopes.treesitter,
+    markdown = link_and_ts,
+    html = link_and_ts,
     tex = telescopes.lsp_document_symbols,
+    cpp = telescopes.lsp_document_symbols,
+    c = telescopes.lsp_document_symbols,
   }
 
-  local default = function () telescopes.treesitter { default_text = ':function: ' } end
+  local default = function() link_and_ts { default_text = ':function: ' } end
   local handler = ft_specializations[vim.bo.filetype] or default
   handler()
 end)
--- nmap('<leader>j', '<cmd>lua require\'telescope.builtin\'.lsp_document_symbols()<cr>')
-nmap('<leader>J', '<cmd>lua require\'telescope.builtin\'.lsp_workspace_symbols()<cr>')
+nmap('<leader>J', telescopes.lsp_dynamic_workspace_symbols)
 nmap('<leader>y', '<cmd>Telescope neoclip<cr>')
 -- Session management
 nmap('<leader>ss', '<cmd>Obsess<cr>')
 nmap('<leader>sd', '<cmd>Obsess!<cr>')
 -- Convenient terminal window
 map_modes(nav_modes, '<c-y>', '<cmd>FloatermToggle<cr>')
+-- Open matching header/source file based on current file name
+nmap('<leader>h', function()
+  local buf_path = vim.api.nvim_buf_get_name(0)
+  local extensions = {
+    ['.cpp'] = {'.h', '.hpp'},
+    ['.cxx'] = {'.h', '.hxx'},
+    ['.cc'] = {'.h', '.hh'},
+    ['.c'] = {'.h'},
+    ['.h'] = {'.c', '.cpp', '.cc', '.cxx'},
+    ['.hpp'] = {'.cpp'},
+    ['.hxx'] = {'.cxx'},
+    ['.hh'] = {'.cc'},
+    ['.js'] = {'.d.ts'},
+    ['.d.ts'] = {'.js'},
+  }
+
+  for from, to in pairs(extensions) do
+    if buf_path:match(from .. '$') then
+      local start = string.sub(buf_path, 1, #buf_path - #from)
+      for _, new_ext in pairs(to) do
+        local new_fpath = start .. new_ext
+        if vim.fn.filereadable(new_fpath) == 1 then
+          vim.cmd('e ' .. new_fpath)
+          return
+        end
+      end
+    end
+  end
+
+  vim.notify('Matching source/header not found!', vim.log.levels.INFO)
+end)
+
+vim.api.nvim_create_user_command('Help', telescopes.help_tags, {})
