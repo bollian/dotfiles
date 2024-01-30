@@ -1,43 +1,29 @@
-local fn = vim.fn    -- to call Vim functions e.g. fn.bufnr()
-local g = vim.g      -- a table to access global variables
-
 local lspconfig = require('lspconfig')
-local buf_set_keymap = vim.api.nvim_buf_set_keymap
+local telescopes = require('telescope.builtin')
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- disable snippets by default
 capabilities.textDocument.completion.completionItem.snippetSupport = false
 
+---@diagnostic disable-next-line: unused-local
 local function on_attach(client, bufnr)
   require('lsp_signature').on_attach()
-  -- require 'cmp_nvim_lsp'.update_cababilities(vim.lsp.protocol.make_client_capabilities)
 
-  local opts = { noremap=true, silent=true }
+  local opts = { noremap=true, silent=true, buffer=bufnr }
   -- there are several goto def/impl/decl actions. this first one is my favorite
-  buf_set_keymap(bufnr, 'n', 'gd',             '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
-  -- the traditional mapping
-  -- buf_set_keymap(bufnr, 'n', '<c-]>',          '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
-
-  buf_set_keymap(bufnr, 'n', 'K',              '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
-  buf_set_keymap(bufnr, 'n', 'gD',             '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
-  -- buf_set_keymap(bufnr, 'n', '<c-k>',          '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
-  buf_set_keymap(bufnr, 'n', '1gD',            '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
-  buf_set_keymap(bufnr, 'n', 'gr',             '<cmd>lua require\'telescope.builtin\'.lsp_references()<cr>', opts)
-  buf_set_keymap(bufnr, 'n', 'g0',             '<cmd>lua require\'telescope.builtin\'.lsp_document_symbols()<cr>', opts)
-  buf_set_keymap(bufnr, 'n', 'gw',             '<cmd>lua require\'telescope.builtin\'.lsp_workspace_symbols()<cr>', opts)
-  -- buf_set_keymap(bufnr, 'n', 'gr',             '<cmd>lua vim.lsp.buf.references()<cr>', opts)
-  -- buf_set_keymap(bufnr, 'n', 'g0',             '<cmd>lua vim.lsp.buf.document_symbol()<cr>', opts)
-  -- buf_set_keymap(bufnr, 'n', 'gW',             '<cmd>lua vim.lsp.buf.workspace_symbol()<cr>', opts)
-  buf_set_keymap(bufnr, 'n', '<localleader>r', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
-  -- buf_set_keymap(bufnr, 'n', '<localleader>d', '<cmd>lua vim.diagnostic.show_line_diagnostics()<cr>', opts)
-  buf_set_keymap(bufnr, 'n', '<localleader>a', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
+  vim.keymap.set('n', 'gd',             vim.lsp.buf.definition, opts)
+  vim.keymap.set('n', 'K',              vim.lsp.buf.hover, opts)
+  vim.keymap.set('n', 'gD',             vim.lsp.buf.declaration, opts)
+  vim.keymap.set('n', '1gD',            vim.lsp.buf.type_definition, opts)
+  vim.keymap.set('n', 'gr',             telescopes.lsp_references, opts)
+  vim.keymap.set('n', 'g0',             telescopes.lsp_document_symbols, opts)
+  vim.keymap.set('n', 'gw',             telescopes.lsp_workspace_symbols, opts)
+  vim.keymap.set('n', '<localleader>r', vim.lsp.buf.rename, opts)
+  vim.keymap.set('n', '<localleader>a', vim.lsp.buf.code_action, opts)
 
   -- configuration for diagnostics
-  buf_set_keymap(bufnr, 'n', 'g[', '<cmd>lua vim.diagnostic.goto_prev()<cr>', opts)
-  buf_set_keymap(bufnr, 'n', 'g]', '<cmd>lua vim.diagnostic.goto_next()<cr>', opts)
-
-  -- TODO: add a mapping for goto implementation
-  -- buf_set_keymap(bufnr, 'n', 'gd',          '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
+  vim.keymap.set('n', 'g[', vim.diagnostic.goto_prev, opts)
+  vim.keymap.set('n', 'g]', vim.diagnostic.goto_next, opts)
 end
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
@@ -81,7 +67,7 @@ local servers = {
     settings = {
       exportPdf = "never"
     }
-  }
+  },
   -- ["julials"] = {}
 }
 for lsp, server_tweaks in pairs(servers) do

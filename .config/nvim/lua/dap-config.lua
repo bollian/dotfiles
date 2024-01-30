@@ -27,25 +27,26 @@ dap.adapters.cpp = {
 -- create a tab for the debug UI if it doesn't exist
 -- switch to that tab if it's not currently open
 -- close that tab if it is currently open
+---@diagnostic disable-next-line: unused-local
 vim.api.nvim_create_user_command('DapUi', function(state)
-  if dap_tabpage == nil then
+  if DapTabpage == nil then
     vim.cmd 'tab split'
     vim.t.guitablabel = 'Debug'
-    dap_tabpage = vim.api.nvim_get_current_tabpage()
+    DapTabpage = vim.api.nvim_get_current_tabpage()
     dapui.open()
-  elseif dap_tabpage == vim.api.nvim_get_current_tabpage() then
+  elseif DapTabpage == vim.api.nvim_get_current_tabpage() then
     M.close_dap()
   else
-    vim.api.nvim_set_current_tabpage(dap_tabpage)
+    vim.api.nvim_set_current_tabpage(DapTabpage)
   end
 end, {})
 
 M.close_dap = function()
-  if dap_tabpage ~= nil then
-    vim.api.nvim_set_current_tabpage(dap_tabpage)
+  if DapTabpage ~= nil then
+    vim.api.nvim_set_current_tabpage(DapTabpage)
     dapui.close()
     vim.cmd 'tabclose'
-    dap_tabpage = nil
+    DapTabpage = nil
   end
 end
 
@@ -82,14 +83,6 @@ local function debug_selection()
     dap_python.debug_selection()
   else
     print(vim.bo.filetype .. ' has no "debug test fixture" keymap set')
-  end
-end
-
-local function test_selection()
-  if vim.bo.filetype == 'python' then
-    dap_python.test_selection()
-  else
-    print(vim.bo.filetype .. ' has no "debug selection" keymap set')
   end
 end
 
