@@ -69,6 +69,7 @@ local servers = {
         },
         workspace = {
           library = vim.api.nvim_get_runtime_file("", true), -- nvim runtime files
+          checkThirdParty = false, -- don't prompt to load runtime files
         },
         telemetry = {
           enable = false,
