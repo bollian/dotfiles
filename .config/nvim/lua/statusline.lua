@@ -1,4 +1,4 @@
-local hydra = require 'hydra.statusline'
+local hydra = require('hydra.statusline')
 
 local diagnostics = {
   'diagnostics',
@@ -17,6 +17,7 @@ local vim_mode = {
   'mode',
   cond = function() return not hydra.is_active() end
 }
+
 local hydra_mode = {
   hydra.get_name,
   cond = function() return hydra.is_active() end,
@@ -24,15 +25,6 @@ local hydra_mode = {
     return { fg = 'black', bg = hydra.get_color() }
   end
 }
-
-local function mode()
-  hydra = require 'hydra.statusline'
-  if hydra.is_active() then
-
-  else
-    return { 'mode' }
-  end
-end
 
 local function filetype_or_lsp()
   local servers = vim.lsp.buf_get_clients()
@@ -47,7 +39,7 @@ local function filetype_or_lsp()
   return vim.bo.filetype or ''
 end
 
-local lualine = require 'lualine'.setup {
+require('lualine').setup {
   options = {
     theme = 'gruvbox-flat',
     section_separators = {},
