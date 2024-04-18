@@ -4,17 +4,17 @@
 # vim's default session file
 Session.vim
 
-# defx file containing the tree expansion state
-.defx-session
-
 # project-specific clangd settings
 .clangd
 
-# ctags database
-tags
+# clangd's cache files
+.cache
 
 # clangd configuration
-compile_commands.json
+compile_commands.json*
+
+# ctags database
+tags
 
 # pyright configuration
 pyrightconfig.json
