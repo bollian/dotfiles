@@ -1,6 +1,15 @@
 return {
   'neovim/nvim-lspconfig',
   'nvim-lua/lsp_extensions.nvim',
+  { 'nvim-lua/lsp-status.nvim',
+    config = function()
+      local lsp_status = require('lsp-status')
+      lsp_status.config {
+        diagnostics = false,
+      }
+      lsp_status.register_progress()
+    end
+  },
   { 'kosayoda/nvim-lightbulb',
     config = function()
       require('nvim-lightbulb').update_lightbulb {

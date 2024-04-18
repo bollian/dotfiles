@@ -37,7 +37,11 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 local servers = {
   ["rust_analyzer"] = {},
   ["pyright"] = {},
-  ["clangd"] = {},
+  ["clangd"] = {
+    init_options = {
+      clangdFileStatus = true,
+    },
+  },
   ["gopls"] = {},
   ["tsserver"] = {},
   ["texlab"] = {},

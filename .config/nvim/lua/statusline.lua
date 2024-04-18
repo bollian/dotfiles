@@ -1,4 +1,5 @@
 local hydra = require('hydra.statusline')
+local lsp_status = require('lsp-status')
 
 local diagnostics = {
   'diagnostics',
@@ -32,8 +33,15 @@ local function filetype_or_lsp()
     local ok, server_name = pcall(function()
       return server.config.name
     end)
+
     if ok then
-      return server_name
+      local messages = lsp_status.messages()
+      local progress = ''
+      if #messages > 0 then
+        local latest = messages[#messages]
+        progress = ' ' .. tostring(latest.percentage) .. '%% ' .. tostring(latest.title)
+      end
+      return server_name .. progress
     end
   end
   return vim.bo.filetype or ''
