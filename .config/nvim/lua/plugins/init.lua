@@ -19,7 +19,7 @@ return {
     config = function()
       require('auto-session').setup {
         -- the dap ui doesn't save well, so just close it
-        pre_save_cmds = { require('dap-config').close_dap }
+        pre_save_cmds = { require('dap-config').close_dap },
       }
     end
   },
@@ -50,7 +50,7 @@ return {
   -- Debugging support
   {
     'rcarriga/nvim-dap-ui',
-    dependencies = { 'mfussenegger/nvim-dap' },
+    dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' },
     config = function()
       require('dapui').setup()
     end,

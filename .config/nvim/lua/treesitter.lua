@@ -1,13 +1,13 @@
-local o = vim.o
-local wo = vim.wo
-local bo = vim.bo
-
 -- not using expr until I can get it to only fold functions
-wo.foldmethod = 'manual'
+vim.wo.foldmethod = 'manual'
 vim.cmd 'set foldexpr=nvim_treesitter#foldexpr()'
 
 require'nvim-treesitter.configs'.setup {
+  modules = {},
   ensure_installed = "all",
+  auto_install = false,
+  sync_install = false,
+  ignore_install = {},
   highlight = {
     enable = true,
     -- disable = {'rust', 'python'} -- list of languages to disable

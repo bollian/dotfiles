@@ -15,5 +15,12 @@ return {
   },
   'tpope/vim-fugitive',
   'rbong/vim-flog',
-  { 'sindrets/diffview.nvim', dependencies = 'nvim-lua/plenary.nvim' },
+  { 'sindrets/diffview.nvim',
+    dependencies = 'nvim-lua/plenary.nvim',
+    config = function()
+      require('diffview').setup {
+        use_icons = false,
+      }
+    end
+  },
 }
