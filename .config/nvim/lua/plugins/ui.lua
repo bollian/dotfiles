@@ -104,13 +104,6 @@ return {
     config = function()
       require('treesitter-context').setup {
         mode = 'topline',
-        patterns = {
-          default = {
-            'class',
-            'function',
-            'method'
-          }
-        }
       }
     end
   },
