@@ -40,7 +40,8 @@ return {
               staged = 'S',
               conflict = 'C'
             }
-          }
+          },
+          type = { enabled = false },
         },
         window = {
           position = 'current',
