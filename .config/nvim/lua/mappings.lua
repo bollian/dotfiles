@@ -90,6 +90,8 @@ nmap('<leader>j', function ()
     tex = telescopes.lsp_document_symbols,
     cpp = telescopes.lsp_document_symbols,
     c = telescopes.lsp_document_symbols,
+    rust = telescopes.lsp_document_symbols,
+    typst = telescopes.lsp_document_symbols,
   }
 
   local default = function() link_and_ts { default_text = ':function: ' } end
