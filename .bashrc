@@ -6,3 +6,7 @@ for rc_script in $(ls $RC_SCRIPT_PATH | sort)
 do
 	source "$RC_SCRIPT_PATH/$rc_script"
 done
+
+if [ "$(pwd)" = '/var/home/bollian' ]; then
+	cd
+fi

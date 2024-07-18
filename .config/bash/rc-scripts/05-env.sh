@@ -26,3 +26,7 @@ export PROMPT_COMMAND='history -a'
 export FZF_DEFAULT_COMMAND="rg --glob !.pijul --files --hidden"
 
 export DOTNET_ROOT=/snap/dotnet-sdk/current
+
+if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
+    export MOZ_ENABLE_WAYLAND=1
+fi
