@@ -1,26 +1,31 @@
 return {
-  { 'airblade/vim-gitgutter',
-    init = function()
-      vim.g.gitgutter_map_keys = 0
-
-      -- display a colored line for git diff
-      vim.g.gitgutter_sign_added = '│'
-      vim.g.gitgutter_sign_modified = '│'
-      vim.g.gitgutter_sign_removed = '_'
-      vim.g.gitgutter_sign_modified_removed = '│_'
-
-      -- default max number of signs is 500. causes problems with large files
-      vim.g.gitgutter_max_signs = 1000
-    end,
+  { 'NeogitOrg/neogit',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'sindrets/diffview.nvim',
+      'nvim-telescope/telescope.nvim',
+    },
+    opts = {
+      kind = "split_above",
+      commit_editor = {
+        kind = "auto"
+      },
+    }
+  },
+  { 'lewis6991/gitsigns.nvim',
+    opts = {
+      signs = {
+        add          = { text = '│' },
+        change       = { text = '│' },
+      }
+    },
   },
   'tpope/vim-fugitive',
   'rbong/vim-flog',
   { 'sindrets/diffview.nvim',
     dependencies = 'nvim-lua/plenary.nvim',
-    config = function()
-      require('diffview').setup {
-        use_icons = false,
-      }
-    end
+    opts = {
+      use_icons = false,
+    }
   },
 }
