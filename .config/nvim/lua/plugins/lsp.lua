@@ -87,12 +87,13 @@ return {
     end
   },
   { 'ray-x/lsp_signature.nvim',
-    config = function()
-      require('lsp_signature').setup({
-        -- not necessary so long as the rest of the signature is visible
-        hint_enable = false,
-        toggle_key = '<C-s>',
-      })
-    end
+    opts = {
+      -- not necessary so long as the rest of the signature is visible
+      hint_enable = false,
+      toggle_key = '<C-s>',
+      handler_opts = {
+        border = "none",
+      },
+    }
   },
 }

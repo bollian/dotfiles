@@ -58,12 +58,15 @@ nmap('<leader>n', '<cmd>noh<cr>')
 -- delete a buffer without deleting the window
 nmap('<leader>q', '<cmd>Bdelete<cr>')
 -- Open the file explorer in the current window
-nmap('<leader>t', '<cmd>Neotree reveal toggle<cr>')
+nmap('<leader>tt', '<cmd>Neotree reveal toggle<cr>')
+nmap('<leader>tf', '<cmd>Neotree reveal toggle<cr>')
+nmap('<leader>tb', '<cmd>Neotree reveal toggle source=buffers<cr>')
+nmap('<leader>ts', '<cmd>Neotree position=right toggle source=document_symbols<cr>')
 -- Quickly splitting windows
 nmap('<leader>v', '<c-w>v')
 -- Open previous telescope
 nmap('<leader>o', telescopes.resume)
--- Searching with fzf
+-- Searching with telescope
 nmap('<leader>f', function() telescopes.find_files { hidden = true } end)
 nmap('<leader>F', telescopes.find_files)
 nmap('<leader>b', telescopes.buffers)
@@ -100,18 +103,13 @@ nmap('<leader>j', function ()
 end)
 nmap('<leader>J', telescopes.lsp_dynamic_workspace_symbols)
 nmap('<leader>y', '<cmd>Telescope neoclip<cr>')
--- Session management
-nmap('<leader>ss', '<cmd>Obsess<cr>')
-nmap('<leader>sd', '<cmd>Obsess!<cr>')
--- Convenient terminal window
-map_modes(nav_modes, '<c-y>', '<cmd>FloatermToggle<cr>')
 -- Open matching header/source file based on current file name
 nmap('<leader>h', function()
   local buf_path = vim.api.nvim_buf_get_name(0)
   local extensions = {
-    ['.cpp'] = {'.h', '.hpp'},
-    ['.cxx'] = {'.h', '.hxx'},
-    ['.cc'] = {'.h', '.hh'},
+    ['.cpp'] = {'.hpp', '.h'},
+    ['.cxx'] = {'.hxx', '.h'},
+    ['.cc'] = {'.hh', '.h'},
     ['.c'] = {'.h'},
     ['.h'] = {'.c', '.cpp', '.cc', '.cxx'},
     ['.hpp'] = {'.cpp'},

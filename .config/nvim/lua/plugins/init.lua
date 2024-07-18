@@ -1,21 +1,14 @@
 return {
   -- Editing functionality
   'moll/vim-bbye',
-  {
-    'numToStr/Comment.nvim',
-    config = function() require('Comment').setup {} end
-  },
+  { 'numToStr/Comment.nvim', opts = {}, },
   'tpope/vim-surround',
   'tpope/vim-repeat',
   'nvim-treesitter/nvim-treesitter-textobjects',
-  {
-    'windwp/nvim-autopairs',
-    config = function() require('nvim-autopairs').setup {} end
-  },
+  { 'windwp/nvim-autopairs', opts = {}, },
 
   -- Extra editor functionality
-  {
-    'rmagatti/auto-session',
+  { 'rmagatti/auto-session',
     config = function()
       require('auto-session').setup {
         -- the dap ui doesn't save well, so just close it
@@ -23,8 +16,7 @@ return {
       }
     end
   },
-  {
-    'ojroques/nvim-osc52',
+  { 'ojroques/nvim-osc52',
     enabled = function()
       return vim.fn.has('win32') == 1
     end,
@@ -46,14 +38,23 @@ return {
     end
   },
   'anuvyklack/hydra.nvim',
+  { 'pocco81/auto-save.nvim',
+    opts = {
+      execution_message = {
+        message = function()
+          return ''
+        end
+      },
+      condition = function(buf)
+        return vim.bo[buf].filetype == 'typst'
+      end
+    },
+  },
 
   -- Debugging support
-  {
-    'rcarriga/nvim-dap-ui',
+  { 'rcarriga/nvim-dap-ui',
     dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' },
-    config = function()
-      require('dapui').setup()
-    end,
+    opts = {},
   },
   { 'mfussenegger/nvim-dap-python', dependencies = { 'mfussenegger/nvim-dap' } },
 }

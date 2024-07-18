@@ -72,6 +72,7 @@ local servers = {
       exportPdf = "never"
     }
   },
+  ["openscad_lsp"] = {},
   -- ["julials"] = {}
 }
 for lsp, server_tweaks in pairs(servers) do

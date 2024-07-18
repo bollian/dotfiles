@@ -24,7 +24,7 @@ require'nvim-treesitter.configs'.setup {
   },
   indent = {
     enable = true,
-    disable = {'c', 'cpp', 'python', 'rust'}
+    disable = {'c', 'cpp', 'python', 'rust', 'typst'}
   },
   playground = {
     enable = true,
