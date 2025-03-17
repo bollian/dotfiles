@@ -27,6 +27,7 @@ slnr() {
 cd
 
 slnr .bashrc      .bashrc
+slnr .gdbinit     .gdbinit
 slnr .inputrc     .inputrc
 slnr .config/bash .config/bash
 slnr .config/git  .config/git
