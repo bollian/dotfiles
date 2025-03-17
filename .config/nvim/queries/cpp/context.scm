@@ -1,5 +1,9 @@
 ; inherits: c
 
 (class_specifier
-  body: (_ (_) @context.end)
+  body: (_) @context.end
+) @context
+
+(namespace_definition
+  body: (_) @context.end
 ) @context

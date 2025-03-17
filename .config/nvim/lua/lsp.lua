@@ -43,7 +43,7 @@ local servers = {
     },
   },
   ["gopls"] = {},
-  ["tsserver"] = {},
+  ["ts_ls"] = {},
   ["texlab"] = {},
   ["bashls"] = {},
   ["html"] = {},

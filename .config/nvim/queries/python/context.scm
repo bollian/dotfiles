@@ -1,4 +1,4 @@
-class_definition
+(class_definition
   body: (_) @context.end
 ) @context
 

@@ -81,6 +81,9 @@ nmap('<leader>c', telescopes.commands)
 nmap('<leader>m', telescopes.marks)
 nmap('<leader>l', telescopes.jumplist)
 nmap('<leader>j', function ()
+  -- treesitter telescope doesn't add current location to the jumplist by
+  -- default, so do it manually to maintain behavioral consistency with
+  -- lsp_document_symbols (and also because the jumplist is useful).
   local function link_and_ts(opts)
     local pos = vim.api.nvim_win_get_cursor(0)
     vim.api.nvim_buf_set_mark(0, "'", pos[1], pos[2], {})
@@ -101,7 +104,14 @@ nmap('<leader>j', function ()
   local handler = ft_specializations[vim.bo.filetype] or default
   handler()
 end)
-nmap('<leader>J', telescopes.lsp_dynamic_workspace_symbols)
+nmap('<leader>Ja', telescopes.lsp_dynamic_workspace_symbols)
+nmap('<leader>Jc', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'class'}) end)
+nmap('<leader>Jf', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'function'}) end)
+nmap('<leader>Jm', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'method'}) end)
+nmap('<leader>Je', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'enum'}) end)
+nmap('<leader>JV', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'enummember'}) end)
+nmap('<leader>Jv', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'variable'}) end)
+nmap('<leader>Jn', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'namespace'}) end)
 nmap('<leader>y', '<cmd>Telescope neoclip<cr>')
 -- Open matching header/source file based on current file name
 nmap('<leader>h', function()

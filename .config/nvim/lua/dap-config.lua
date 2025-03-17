@@ -5,24 +5,53 @@ local dap_python = require 'dap-python'
 local M = {}
 
 dap.adapters.python = {
-    type = 'executable',
-    command = 'python3',
-    args = {'-m', 'debugpy.adapter'}
+  id = 'debugpy',
+  type = 'executable',
+  command = 'python3',
+  args = {'-m', 'debugpy.adapter'}
 }
 
-dap.adapters.cpp = {
-    type = 'executable',
-    name = 'lldb-cpp',
-    command = 'lldb-vscode-11',
-    args = {},
-    attach = {
-        pidProperty = "processId",
-        pidSelect = "ask"
-    },
-    env = {
-        LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY = "YES"
-    }
+dap.adapters.c = {
+  id = 'cppdbg',
+  type = 'executable',
+  command = os.getenv('HOME') .. '/opt/cpptools/extension/debugAdapters/bin/OpenDebugAD7',
 }
+dap.adapters.cpp = dap.adapters.c
+
+dap.configurations.c = {
+  {
+    name = 'dockerized core dump',
+    MIMode = 'gdb',
+    args = function()
+      local container_name = vim.fn.input('Container name: ', 'fulldev')
+      local core_path = vim.fn.input('Core dump path: ', '', 'file')
+      return {
+        core_path = core_path,
+      }
+    end,
+    type = 'cppdbg',
+    request = 'launch', -- launch a new process inside a debugger
+    program = function()
+      local path = vim.fn.input('Executable path: ', '', 'file')
+      return (path and path ~= '') and path or dap.ABORT
+    end,
+  }
+}
+dap.configurations.cpp = dap.configurations.c
+
+-- dap.adapters.cpp = {
+--     type = 'executable',
+--     name = 'lldb-cpp',
+--     command = 'lldb-vscode-11',
+--     args = {},
+--     attach = {
+--         pidProperty = "processId",
+--         pidSelect = "ask"
+--     },
+--     env = {
+--         LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY = "YES"
+--     }
+-- }
 
 -- create a tab for the debug UI if it doesn't exist
 -- switch to that tab if it's not currently open
