@@ -122,8 +122,12 @@ return {
     opts = {
       open_mapping = '<c-y>',
       insert_mappings = true,
+      terminal_mappings = true,
       direction = 'horizontal',
       hide_numbers = false,
+      -- read this config value lazily b/c vim.go.shell gets set after the
+      -- plugin is loaded
+      shell = function() return vim.go.shell end,
     },
   },
   { 'AckslD/nvim-neoclip.lua', opts = {} },

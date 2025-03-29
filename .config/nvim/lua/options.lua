@@ -51,6 +51,10 @@ merge_into(vim.opt, {
   smarttab = true, -- delete or insert spaces according to shiftwidth
 })
 
+if vim.fn.executable('elvish') == 1 then
+  vim.opt.shell = 'elvish'
+end
+
 -- a few custom filetype associations
 local function pattern_ftype(pattern, filetype)
   vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
