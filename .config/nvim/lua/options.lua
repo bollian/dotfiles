@@ -32,7 +32,6 @@ merge_into(vim.opt, {
   foldcolumn = '1', -- Show when I'm in an open fold
   foldclose = 'all', -- Automatically close folds when leaving them
   scrolloff = 10, -- Keep the cursor 10 lines from the top/bottom of the screen
-  textwidth = 80, -- Automatically hit enter for me
   hidden = true, -- Required for operations modifying multiple buffers like rename.
   cursorline = true, -- Highlight the line your cursor is on
   signcolumn = 'yes', -- Prevent the window from resizing due to the gitgutter being added

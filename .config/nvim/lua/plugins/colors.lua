@@ -9,9 +9,4 @@ return {
   },
   { 'nvim-treesitter/nvim-treesitter', config = function() vim.fn.execute(':TSUpdate') end },
   'nvim-treesitter/playground',
-
-  -- Language-specific plugins
-  'arm9/arm-syntax-vim',
-  'lervag/vimtex',
-  'kaarmu/typst.vim',
 }

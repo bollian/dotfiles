@@ -67,11 +67,7 @@ local servers = {
       },
     },
   },
-  ["typst_lsp"] = {
-    settings = {
-      exportPdf = "never"
-    }
-  },
+  ["tinymist"] = {},
   ["openscad_lsp"] = {},
   -- ["julials"] = {}
 }
