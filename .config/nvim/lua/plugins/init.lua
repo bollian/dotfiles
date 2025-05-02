@@ -12,7 +12,7 @@ return {
     config = function()
       require('auto-session').setup {
         -- the dap ui doesn't save well, so just close it
-        pre_save_cmds = { require('dap-config').close_dap },
+        -- pre_save_cmds = { require('dap-config').close_dap },
       }
     end
   },
@@ -37,7 +37,7 @@ return {
       }
     end
   },
-  'anuvyklack/hydra.nvim',
+  -- 'anuvyklack/hydra.nvim',
   { 'pocco81/auto-save.nvim',
     opts = {
       execution_message = {

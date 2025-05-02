@@ -16,10 +16,9 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 require('lazy').setup('plugins')
--- require 'plugins'
 require 'options'
 require 'lsp'
 require 'mappings'
 require 'treesitter'
 require 'statusline'
-require 'dap-config'
+-- require 'dap-config'

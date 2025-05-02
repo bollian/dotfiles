@@ -131,8 +131,6 @@ return {
     },
   },
   { 'AckslD/nvim-neoclip.lua', opts = {} },
-  'lotabout/skim',
-  'lotabout/skim.vim',
   { 'nvim-treesitter/nvim-treesitter-context',
     opts = {
         mode = 'topline',

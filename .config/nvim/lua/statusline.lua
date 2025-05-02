@@ -1,4 +1,4 @@
-local hydra = require('hydra.statusline')
+-- local hydra = require('hydra.statusline')
 local lsp_status = require('lsp-status')
 
 local diagnostics = {
@@ -14,21 +14,21 @@ local diff = {
   color_removed = '#e06c65'
 }
 
-local vim_mode = {
-  'mode',
-  cond = function() return not hydra.is_active() end
-}
-
-local hydra_mode = {
-  hydra.get_name,
-  cond = function() return hydra.is_active() end,
-  color = function()
-    return { fg = 'black', bg = hydra.get_color() }
-  end
-}
+-- local vim_mode = {
+--   'mode',
+--   cond = function() return not hydra.is_active() end
+-- }
+--
+-- local hydra_mode = {
+--   hydra.get_name,
+--   cond = function() return hydra.is_active() end,
+--   color = function()
+--     return { fg = 'black', bg = hydra.get_color() }
+--   end
+-- }
 
 local function filetype_or_lsp()
-  local servers = vim.lsp.buf_get_clients()
+  local servers = vim.lsp.get_clients()
   for _, server in ipairs(servers) do
     local ok, server_name = pcall(function()
       return server.config.name
@@ -56,12 +56,13 @@ require('lualine').setup {
     globalstatus = true
   },
   sections = {
-    lualine_a = {vim_mode, hydra_mode},
+    lualine_a = {'mode'},
+    -- lualine_a = {vim_mode, hydra_mode},
     lualine_b = {diff, 'branch'},
     lualine_c = {diagnostics, 'filename'},
     lualine_x = {'encoding', 'fileformat', filetype_or_lsp},
     lualine_y = {'progress'},
     lualine_z = {'location'},
   },
-  extensions = {'fugitive', 'fzf'}
+  extensions = {'fugitive'}
 }

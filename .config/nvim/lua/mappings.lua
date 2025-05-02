@@ -145,4 +145,5 @@ nmap('<leader>h', function()
   vim.notify('Matching source/header not found!', vim.log.levels.INFO)
 end)
 
-vim.api.nvim_create_user_command('Help', telescopes.help_tags, {})
+vim.api.nvim_create_user_command('Help', telescopes.help_tags, {desc = 'Search help pages'})
+vim.api.nvim_create_user_command('Commands', telescopes.commands, {desc = 'Search user commands'})
