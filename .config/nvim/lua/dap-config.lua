@@ -1,6 +1,5 @@
 local dap = require 'dap'
 local dapui = require 'dapui'
-local hydra = require 'hydra'
 local dap_python = require 'dap-python'
 local M = {}
 
@@ -8,7 +7,17 @@ dap.adapters.python = {
   id = 'debugpy',
   type = 'executable',
   command = 'python3',
-  args = {'-m', 'debugpy.adapter'}
+  args = {'-m', 'debugpy.adapter'},
+}
+
+dap.configurations.python = {
+  {
+    type = 'python',
+    request = 'launch',
+    name = 'Launch file',
+    program = '${file}',
+    justMyCode = false,
+  },
 }
 
 dap.adapters.c = {
@@ -81,81 +90,83 @@ end
 
 dap_python.test_runner = 'pytest'
 
-
--- debug mode with dedicated keymaps
-local function conditional_bp()
+vim.api.nvim_create_user_command('DapConditionalBp', function()
   dap.set_breakpoint(vim.fn.input('Condition: '))
-end
+end, {desc = 'Create conditional breakpoint on the current line'})
 
-local function logpoint()
+vim.api.nvim_create_user_command('DapLogpoint', function()
   dap.set_breakpoint(nil, nil, vim.fn.input('Log message: '))
-end
+end, {desc = 'Create a breakpoint that just logs a message'})
 
-local function debug_test()
+vim.api.nvim_create_user_command('DapDebugTest', function()
   if vim.bo.filetype == 'python' then
-    dap_python.test_method()
+    dap_python.test_method({
+      config = {
+        justMyCode = false,
+      }
+    })
   else
     print(vim.bo.filetype .. ' has no "debug unit test" keymap set')
   end
-end
+end, {desc = 'Debug the test currently under the cursor'})
 
-local function debug_fixture()
+vim.api.nvim_create_user_command('DapDebugFixture', function()
   if vim.bo.filetype == 'python' then
     dap_python.test_method()
   else
     print(vim.bo.filetype .. ' has no "debug test fixture" keymap set')
   end
-end
+end, {desc = 'Debug the fixture under the cursor with all included unit tests'})
 
-local function debug_selection()
+vim.api.nvim_create_user_command('DapDebugSelection', function()
   if vim.bo.filetype == 'python' then
     dap_python.debug_selection()
   else
     print(vim.bo.filetype .. ' has no "debug test fixture" keymap set')
   end
-end
+end, {desc = 'Debug the currently highlighted code'})
 
-local hint = [[
-
- _c_: Continue/start      _t_: Debug test
- _n_: Next                _F_: Debug fixture
- _s_: Step                _v_: Debug selection 
- _f_: Finish function     _r_: Rerun previous
- _b_: Toggle break        _R_: Open REPL
- _B_: Conditional break   _q_: Quit session
- _l_: Logpoint
-                    _<esc>_
-
-]]
-hydra({
-  name = 'Debug',
-  mode = 'n',
-  body = '<leader>d',
-  hint = hint,
-  config = {
-    color = 'pink',
-    invoke_on_body = true,
-    hint = {
-      type = 'window',
-      position = 'middle-right',
-    },
-  },
-  heads = {
-    { 'c', dap.continue, { desc = 'Continue or start until next breakpoint' } },
-    { 'n', dap.step_over, { desc = 'Step over, not entering functions' } },
-    { 's', dap.step_into, { desc = 'Step into, entering any functions' } },
-    { 'f', dap.step_out, { desc = 'Step out, finishing current function' } },
-    { 'b', dap.toggle_breakpoint, { desc = 'Toggle breakpoint' } },
-    { 'B', conditional_bp, { desc = 'Set conditional breakpoint' } },
-    { 'l', logpoint, { desc = 'Set logpoint' } },
-    { 't', debug_test, { desc = 'Debug the hovered test function' } },
-    { 'F', debug_fixture, { desc = 'Debug the hovered test fixture' } },
-    { 'v', debug_selection, { desc = 'Debug the highlighted code', } },
-    { 'r', dap.run_last, { desc = 'Rerun previous configuration' } },
-    { 'R', dap.repl.open, { desc = 'Open REPL' } },
-    { 'q', dap.terminate, { desc = 'Kill current session', exit = true } },
-    { '<esc>', nil, { exit = true } },
-  },
-})
+-- local hint = [[
+--
+--  _c_: Continue/start      _t_: Debug test
+--  _n_: Next                _F_: Debug fixture
+--  _s_: Step                _v_: Debug selection 
+--  _f_: Finish function     _r_: Rerun previous
+--  _b_: Toggle break        _R_: Open REPL
+--  _B_: Conditional break   _q_: Quit session
+--  _l_: Logpoint
+--                     _<esc>_
+--
+-- ]]
+-- hydra({
+--   name = 'Debug',
+--   mode = 'n',
+--   body = '<leader>d',
+--   hint = hint,
+--   config = {
+--     color = 'pink',
+--     invoke_on_body = true,
+--     hint = {
+--       type = 'window',
+--       position = 'middle-right',
+--     },
+--   },
+--   heads = {
+--     { 'c', dap.continue, { desc = 'Continue or start until next breakpoint' } },
+--     { 'n', dap.step_over, { desc = 'Step over, not entering functions' } },
+--     { 's', dap.step_into, { desc = 'Step into, entering any functions' } },
+--     { 'f', dap.step_out, { desc = 'Step out, finishing current function' } },
+--     { 'b', dap.toggle_breakpoint, { desc = 'Toggle breakpoint' } },
+--     { 'B', conditional_bp, { desc = 'Set conditional breakpoint' } },
+--     { 'l', logpoint, { desc = 'Set logpoint' } },
+--     { 't', debug_test, { desc = 'Debug the hovered test function' } },
+--     { 'F', debug_fixture, { desc = 'Debug the hovered test fixture' } },
+--     { 'v', debug_selection, { desc = 'Debug the highlighted code', } },
+--     { 'r', dap.run_last, { desc = 'Rerun previous configuration' } },
+--     { 'R', dap.repl.open, { desc = 'Open REPL' } },
+--     { 'q', dap.terminate, { desc = 'Kill current session', exit = true } },
+--     { '<esc>', nil, { exit = true } },
+--   },
+-- })
 
 return M
