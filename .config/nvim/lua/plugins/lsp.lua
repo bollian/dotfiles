@@ -1,5 +1,4 @@
 return {
-  'github/copilot.vim',
   'neovim/nvim-lspconfig',
   'nvim-lua/lsp_extensions.nvim',
   { 'nvim-lua/lsp-status.nvim',

@@ -98,6 +98,8 @@ nmap('<leader>j', function ()
     c = telescopes.lsp_document_symbols,
     rust = telescopes.lsp_document_symbols,
     typst = telescopes.lsp_document_symbols,
+    python = telescopes.lsp_document_symbols,
+    lua = telescopes.lsp_document_symbols,
   }
 
   local default = function() link_and_ts { default_text = ':function: ' } end
@@ -105,11 +107,12 @@ nmap('<leader>j', function ()
   handler()
 end)
 nmap('<leader>Ja', telescopes.lsp_dynamic_workspace_symbols)
+nmap('<leader>JJ', telescopes.lsp_dynamic_workspace_symbols)
 nmap('<leader>Jc', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'class'}) end)
-nmap('<leader>Jf', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'function'}) end)
+nmap('<leader>Jf', function() telescopes.lsp_dynamic_workspace_symbols({symbols = {'function', 'method'}}) end)
 nmap('<leader>Jm', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'method'}) end)
-nmap('<leader>Je', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'enum'}) end)
-nmap('<leader>JV', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'enummember'}) end)
+nmap('<leader>Je', function() telescopes.lsp_dynamic_workspace_symbols({symbols = {'enum', 'enummember'}}) end)
+nmap('<leader>JE', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'enummember'}) end)
 nmap('<leader>Jv', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'variable'}) end)
 nmap('<leader>Jn', function() telescopes.lsp_dynamic_workspace_symbols({symbols = 'namespace'}) end)
 nmap('<leader>y', '<cmd>Telescope neoclip<cr>')

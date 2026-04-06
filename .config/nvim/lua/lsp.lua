@@ -1,4 +1,3 @@
-local lspconfig = require('lspconfig')
 local telescopes = require('telescope.builtin')
 
 -- configure default lsp behaviors
@@ -35,6 +34,10 @@ end, {desc = 'Toggle display of inlay-hints from the language server'})
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- disable snippets by default
 capabilities.textDocument.completion.completionItem.snippetSupport = false
+capabilities.textDocument.semanticTokens = { multilineTokenSupport = true }
+vim.lsp.config('*', {
+  capabilities = capabilities
+})
 
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(ev)
@@ -47,38 +50,18 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end
 })
 
-local servers = {
-  ['rust_analyzer'] = {
-    settings = {
-      check = {
-        command = 'clippy',
-      },
-    },
-  },
-  ['pyright'] = {},
-  ['clangd'] = {
-    init_options = {
-      clangdFileStatus = true,
-    },
-  },
-  ['gopls'] = {},
-  ['ts_ls'] = {},
-  ['texlab'] = {},
-  ['bashls'] = {},
-  ['html'] = {},
-  ['cssls'] = {},
-  ['tinymist'] = {},
-  ['openscad_lsp'] = {},
-  -- ['julials'] = {}
-}
-for lsp, server_tweaks in pairs(servers) do
-    -- these settings are shared among all the servers
-    local server_defaults = {
-        capabilities = capabilities,
-    }
-    local server_setup = vim.tbl_extend('force', server_defaults, server_tweaks)
-    lspconfig[lsp].setup(server_setup)
-end
-
 -- enable neovim-managed servers
-vim.lsp.enable('luals')
+vim.lsp.enable({
+  'luals',
+  'rust_analyzer',
+  'pyright',
+  'clangd',
+  'gopls',
+  'ts_ls',
+  'texlab',
+  'bashls',
+  'html',
+  'cssls',
+  'tinymist',
+  'openscad_lsp',
+})
